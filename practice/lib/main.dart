@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:practice/home_screen.dart';
 import 'package:practice/login_screen.dart';
+import 'package:practice/sign_up_screen.dart';
 
 void main() {
   runApp(const MyApp());

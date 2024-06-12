@@ -24,55 +24,55 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text('Welcome to', style: TextStyle(fontSize: 40)),
+            const Text('Welcome to', style: TextStyle(fontSize: 40)),
             Image.network('https://i.imgur.com/Shu2fPn.png'),
-            SizedBox(height: 35),
-            Container(
+            const SizedBox(height: 35),
+            SizedBox(
               width: MediaQuery.of(context).size.width * 0.8,
               // height: MediaQuery.of(context).size.height * 0.8,
               child: TextFormField(
                 decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 20.0, horizontal: 20.0),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8)),
                     hintText: 'Email'),
               ),
             ),
             const SizedBox(height: 20),
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width * 0.8,
               // height: MediaQuery.of(context).size.height * 0.8,
               child: TextFormField(
                 decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 20.0, horizontal: 20.0),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8)),
                     hintText: 'Password'),
               ),
             ),
-            SizedBox(height: 20),
-            Container(
+            const SizedBox(height: 20),
+            SizedBox(
               width: MediaQuery.of(context).size.width * 0.8,
               child: ElevatedButton(
                   onPressed: () {
                     // Handle button press
                   },
-                  child: Text('Submit'),
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xffed9937),
-                      padding: EdgeInsets.symmetric(
+                      backgroundColor: const Color(0xffed9937),
+                      padding: const EdgeInsets.symmetric(
                           vertical: 20), // Adjust the height of the button
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
-                      ))),
+                      )),
+                  child: const Text('Submit')),
             ),
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Icon(Icons.apple),
               SizedBox(width: 20),
               Icon(Icons.apple),

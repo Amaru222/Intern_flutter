@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,7 +56,22 @@ class _LoginScreenState extends State<LoginScreen> {
                         vertical: 20.0, horizontal: 20.0),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8)),
-                    hintText: 'Password'),
+                    hintText: 'Create Password'),
+              ),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.8,
+              // height: MediaQuery.of(context).size.height * 0.8,
+              child: TextFormField(
+                decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 20.0, horizontal: 20.0),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8)),
+                    hintText: 'Confirm Password'),
               ),
             ),
             const SizedBox(height: 20),
@@ -117,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                      'Dont have Account?',
+                      'Do have Account?',
                       style: TextStyle(fontSize: 18),
                     ),
                     const SizedBox(
@@ -127,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         // Handle TextButton press
                       },
                       child: const Text(
-                        'create Account',
+                        'Sign In',
                         style:
                             TextStyle(fontSize: 18, color: Color(0xffed9937)),
                       ),

@@ -1,17 +1,48 @@
 import 'dart:math';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  final VoidCallback showLoginPage;
+  const SignUpScreen({super.key, required this.showLoginPage});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmpasswordController = TextEditingController();
+  Future signUp() async {
+    if (passwordConfirm()) {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim());
+    }
+  }
+
+  bool passwordConfirm() {
+    if (_passwordController.text.trim() ==
+        _confirmpasswordController.text.trim()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmpasswordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,6 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
               width: MediaQuery.of(context).size.width * 0.8,
               // height: MediaQuery.of(context).size.height * 0.8,
               child: TextFormField(
+                controller: _emailController,
                 decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
@@ -49,6 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
               width: MediaQuery.of(context).size.width * 0.8,
               // height: MediaQuery.of(context).size.height * 0.8,
               child: TextFormField(
+                controller: _passwordController,
                 decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
@@ -56,7 +89,23 @@ class _LoginScreenState extends State<LoginScreen> {
                         vertical: 20.0, horizontal: 20.0),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8)),
-                    hintText: 'Password'),
+                    hintText: 'Create Password'),
+              ),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.8,
+              // height: MediaQuery.of(context).size.height * 0.8,
+              child: TextFormField(
+                controller: _confirmpasswordController,
+                decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 20.0, horizontal: 20.0),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8)),
+                    hintText: 'Confirm Password'),
               ),
             ),
             const SizedBox(height: 20),
@@ -64,7 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: MediaQuery.of(context).size.width * 0.8,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Handle button press
+                    signUp();
                   },
                   style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xffed9937),
@@ -117,7 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                      'Dont have Account?',
+                      'Do have Account?',
                       style: TextStyle(fontSize: 18),
                     ),
                     const SizedBox(
@@ -126,10 +175,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () {
                         // Handle TextButton press
                       },
-                      child: const Text(
-                        'create Account',
-                        style:
-                            TextStyle(fontSize: 18, color: Color(0xffed9937)),
+                      child: GestureDetector(
+                        onTap: widget.showLoginPage,
+                        child: const Text(
+                          'Sign In',
+                          style:
+                              TextStyle(fontSize: 18, color: Color(0xffed9937)),
+                        ),
                       ),
                     ),
                   ],

@@ -8,6 +8,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  var currentIndex = 0;
+  List<String> navIcons = [
+    'assets/images/home_smile.png',
+    'assets/images/calendar_event.png',
+    'assets/images/chat_smile.png',
+    'assets/images/settings.png'
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -149,7 +156,63 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: _bottomBar(),
+      bottomNavigationBar: Container(
+        margin: const EdgeInsets.all(20),
+        height: MediaQuery.of(context).size.width * .155,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(.15),
+              blurRadius: 30,
+              offset: const Offset(0, 10),
+            ),
+          ],
+          borderRadius: BorderRadius.circular(50),
+        ),
+        child: ListView.builder(
+          itemCount: 4,
+          scrollDirection: Axis.horizontal,
+          padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * .024),
+          itemBuilder: (context, index) => InkWell(
+            onTap: () {
+              setState(
+                () {
+                  currentIndex = index;
+                },
+              );
+            },
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 1500),
+                  // curve: Curves.fastLinearToSlowEaseIn,
+                  margin: EdgeInsets.only(
+                    bottom: index == currentIndex
+                        ? 0
+                        : MediaQuery.of(context).size.width * .029,
+                    right: MediaQuery.of(context).size.width * .0422,
+                    left: MediaQuery.of(context).size.width * .0422,
+                  ),
+                  width: MediaQuery.of(context).size.width * .128,
+                  height: index == currentIndex
+                      ? MediaQuery.of(context).size.width * .014
+                      : 0,
+                  decoration: const BoxDecoration(
+                    color: Colors.blueAccent,
+                  ),
+                ),
+                Image(image: AssetImage(navIcons[index])),
+                SizedBox(height: MediaQuery.of(context).size.width * .03),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -168,34 +231,5 @@ Widget _buildIconButton(String nameIcon, String label) {
         textAlign: TextAlign.center,
       ),
     ],
-  );
-}
-
-Widget _bottomBar() {
-  return SizedBox(
-    height: 80,
-    child: BottomNavigationBar(
-      showSelectedLabels: true,
-      showUnselectedLabels: true,
-      selectedFontSize: 0,
-      backgroundColor: Colors.white,
-      items: const [
-        BottomNavigationBarItem(
-          icon: Image(
-            image: AssetImage('assets/images/home_smile.png'),
-          ),
-          label: 'Trang chủ',
-        ),
-        BottomNavigationBarItem(
-            icon: Image(image: AssetImage('assets/images/calendar_event.png')),
-            label: 'Điểm danh'),
-        BottomNavigationBarItem(
-            icon: Image(image: AssetImage('assets/images/chat_smile.png')),
-            label: 'Tin nhắn'),
-        BottomNavigationBarItem(
-            icon: Image(image: AssetImage('assets/images/settings.png')),
-            label: 'Cài đặt'),
-      ],
-    ),
   );
 }

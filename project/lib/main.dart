@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project/features/home/ui/home_screen.dart';
+import 'package:project/routes/app_route_config.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,10 +12,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      home: HomeScreen(),
+      routerConfig: MyAppRoute().router,
     );
   }
 }

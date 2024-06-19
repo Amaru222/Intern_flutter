@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project/component/bottomnavigationbar.dart';
 
 class AttendanceScreen extends StatefulWidget {
   const AttendanceScreen({super.key});
@@ -10,6 +11,11 @@ class AttendanceScreen extends StatefulWidget {
 class _AttendanceScreenState extends State<AttendanceScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return const Scaffold(
+      body: Text('attendance'),
+      bottomNavigationBar: BottomBar(
+        currentIndex: 1,
+      ),
+    );
   }
 }

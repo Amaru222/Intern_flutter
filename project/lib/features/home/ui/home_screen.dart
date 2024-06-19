@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:project/component/bottomnavigationbar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -8,13 +10,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  var currentIndex = 0;
-  List<String> navIcons = [
-    'assets/images/home_smile.png',
-    'assets/images/calendar_event.png',
-    'assets/images/chat_smile.png',
-    'assets/images/settings.png'
-  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +22,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: MediaQuery.of(context).size.width * 0.5,
                   decoration: const BoxDecoration(
                       image: DecorationImage(
-                          image: AssetImage('assets/images/header_home.png'),
+                          image: AssetImage(
+                              'assets/images/icon_home/header_home.png'),
                           fit: BoxFit.cover)),
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -64,7 +60,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       Row(
                         children: [
                           Image(
-                            image: AssetImage('assets/images/notification.png'),
+                            image: AssetImage(
+                                'assets/images/icon_home/notification.png'),
                           ),
                           SizedBox(
                             width: 30,
@@ -93,19 +90,25 @@ class _HomeScreenState extends State<HomeScreen> {
                     physics: const NeverScrollableScrollPhysics(),
                     children: [
                       _buildIconButton(
-                          'assets/images/icon_calendar.png', 'Thời khóa biểu'),
+                          'assets/images/icon_home/icon_calendar.png',
+                          'Thời khóa biểu'),
                       _buildIconButton(
-                          'assets/images/icon_attendance.png', 'Điểm danh'),
+                          'assets/images/icon_home/icon_attendance.png',
+                          'Điểm danh'),
                       _buildIconButton(
-                          'assets/images/icon_test_schedule.png', 'Lịch thi'),
+                          'assets/images/icon_home/icon_test_schedule.png',
+                          'Lịch thi'),
                       _buildIconButton(
-                          'assets/images/icon_transcript.png', 'Bảng điểm'),
+                          'assets/images/icon_home/icon_transcript.png',
+                          'Bảng điểm'),
                       _buildIconButton(
-                          'assets/images/icon_comment.png', 'Nhận xét'),
+                          'assets/images/icon_home/icon_comment.png',
+                          'Nhận xét'),
                       _buildIconButton(
-                          'assets/images/icon_message.png', 'Tin nhắn'),
+                          'assets/images/icon_home/icon_message.png',
+                          'Tin nhắn'),
                       _buildIconButton(
-                          'assets/images/icon_menu.png', 'Thực đơn'),
+                          'assets/images/icon_home/icon_menu.png', 'Thực đơn'),
                     ],
                   ),
                   const Row(
@@ -121,7 +124,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       SizedBox(
                         width: 8,
                       ),
-                      Image(image: AssetImage('assets/images/firework.png'))
+                      Image(
+                          image: AssetImage(
+                              'assets/images/icon_home/firework.png'))
                     ],
                   ),
                   SingleChildScrollView(
@@ -156,62 +161,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: Container(
-        margin: const EdgeInsets.all(20),
-        height: MediaQuery.of(context).size.width * .155,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(.15),
-              blurRadius: 30,
-              offset: const Offset(0, 10),
-            ),
-          ],
-          borderRadius: BorderRadius.circular(50),
-        ),
-        child: ListView.builder(
-          itemCount: 4,
-          scrollDirection: Axis.horizontal,
-          padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * .024),
-          itemBuilder: (context, index) => InkWell(
-            onTap: () {
-              setState(
-                () {
-                  currentIndex = index;
-                },
-              );
-            },
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 1500),
-                  // curve: Curves.fastLinearToSlowEaseIn,
-                  margin: EdgeInsets.only(
-                    bottom: index == currentIndex
-                        ? 0
-                        : MediaQuery.of(context).size.width * .029,
-                    right: MediaQuery.of(context).size.width * .0422,
-                    left: MediaQuery.of(context).size.width * .0422,
-                  ),
-                  width: MediaQuery.of(context).size.width * .128,
-                  height: index == currentIndex
-                      ? MediaQuery.of(context).size.width * .014
-                      : 0,
-                  decoration: const BoxDecoration(
-                    color: Colors.blueAccent,
-                  ),
-                ),
-                Image(image: AssetImage(navIcons[index])),
-                SizedBox(height: MediaQuery.of(context).size.width * .03),
-              ],
-            ),
-          ),
-        ),
+      bottomNavigationBar: const BottomBar(
+        currentIndex: 0,
       ),
     );
   }

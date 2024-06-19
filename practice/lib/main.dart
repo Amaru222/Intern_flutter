@@ -1,5 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:practice/cubit/counter_cubit.dart';
+import 'package:practice/cubit/counter_page.dart';
 import 'package:practice/firebase/auth/auth.dart';
 
 import 'package:practice/firebase/pages/home_screen.dart';
@@ -26,7 +28,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         home: Scaffold(
-          body: const MainPage(),
+          body: CounterPage(),
         ));
   }
 }

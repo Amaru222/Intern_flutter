@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:project/features/auth/login/bloc/login_bloc.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -11,16 +13,19 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   late LoginBloc _loginBloc;
-
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   @override
   void initState() {
     super.initState();
-    _loginBloc = LoginBloc();
+    _loginBloc = LoginBloc(firebaseAuth: FirebaseAuth.instance);
   }
 
   @override
   void dispose() {
     _loginBloc.close();
+    _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
@@ -48,6 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         width: MediaQuery.of(context).size.width * 0.9,
                         height: MediaQuery.of(context).size.height * 0.1,
                         child: TextFormField(
+                          controller: _emailController,
                           style: const TextStyle(
                             color: Color(0xfff2b87d),
                             fontSize: 20,
@@ -71,6 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             width: MediaQuery.of(context).size.width * 0.9,
                             height: MediaQuery.of(context).size.height * 0.1,
                             child: TextFormField(
+                              controller: _passwordController,
                               style: const TextStyle(
                                   color: Color(0xfff2b87d), fontSize: 20),
                               obscureText: state.isPasswordObscured,
@@ -101,21 +108,47 @@ class _LoginScreenState extends State<LoginScreen> {
                           );
                         },
                       ),
-                      SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.9,
-                          child: ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xfffcd2a8),
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 20),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                )),
-                            child: const Text('ĐĂNG NHẬP',
-                                style: TextStyle(
-                                    fontSize: 20, color: Colors.white)),
-                          )),
+                      BlocConsumer<LoginBloc, LoginState>(
+                        listener: (context, state) {
+                          if (state.status == LoginStatus.success) {
+                            context.go('/');
+                          } else if (state.status == LoginStatus.failure) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content:
+                                    Text('Sai tên đăng nhập hoặc mật khẩu'),
+                              ),
+                            );
+                          }
+                        },
+                        builder: (context, state) {
+                          return SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.9,
+                              child: ElevatedButton(
+                                onPressed: state.status == LoginStatus.loading
+                                    ? null
+                                    : () {
+                                        context.read<LoginBloc>().add(
+                                            LoginRequest(
+                                                email: _emailController.text,
+                                                password:
+                                                    _passwordController.text));
+                                      },
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xfffcd2a8),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 20),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    )),
+                                child: state.status == LoginStatus.loading
+                                    ? const CircularProgressIndicator()
+                                    : const Text('ĐĂNG NHẬP',
+                                        style: TextStyle(
+                                            fontSize: 20, color: Colors.white)),
+                              ));
+                        },
+                      ),
                       const SizedBox(
                         height: 10,
                       ),

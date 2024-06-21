@@ -15,6 +15,25 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
   SettingBloc() : super(SettingInitial()) {
     on<SettingEvent>((event, emit) {});
     on<LoadDataSetting>(_loadDataSetting);
+    _listenToSettinghange();
+  }
+  void _listenToSettinghange() {
+    User? currentUser = _auth.currentUser;
+    if (currentUser != null) {
+      _firestore
+          .collection('users')
+          .doc(currentUser.uid)
+          .snapshots()
+          .listen((snapshot) {
+        if (snapshot.exists) {
+          Map<String, dynamic> profileData = snapshot.data()!;
+          String nameUser = profileData['name'] ?? '';
+          String classInfo = profileData['class'] ?? '';
+          String title = profileData['title'] ?? '';
+          add(SettingUpdated(nameUser, classInfo, title));
+        }
+      });
+    }
   }
 
   Future<FutureOr<void>> _loadDataSetting(

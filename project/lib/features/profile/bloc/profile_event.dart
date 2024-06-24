@@ -1,10 +1,7 @@
 part of 'profile_bloc.dart';
 
-sealed class ProfileEvent extends Equatable {
+sealed class ProfileEvent {
   const ProfileEvent();
-
-  @override
-  List<Object> get props => [];
 }
 
 // ignore: camel_case_types
@@ -17,6 +14,4 @@ class ProfileUpdated extends ProfileEvent {
   final String title;
   const ProfileUpdated(
       this.profileItems, this.nameUser, this.classInfo, this.title);
-  @override
-  List<Object> get props => [profileItems, nameUser, classInfo];
 }

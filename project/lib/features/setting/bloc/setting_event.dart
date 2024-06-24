@@ -11,6 +11,4 @@ class SettingUpdated extends SettingEvent {
   final String classInfo;
   final String title;
   SettingUpdated(this.nameUser, this.classInfo, this.title);
-  @override
-  List<Object> get props => [nameUser, classInfo, title];
 }

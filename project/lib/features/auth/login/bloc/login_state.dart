@@ -3,7 +3,7 @@ part of 'login_bloc.dart';
 enum LoginStatus { initial, loading, success, failure }
 
 @immutable
-class LoginState extends Equatable {
+class LoginState {
   final bool isPasswordObscured;
   final LoginStatus status;
   final String errorMessage;
@@ -20,9 +20,6 @@ class LoginState extends Equatable {
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
-
-  @override
-  List<Object> get props => [isPasswordObscured, status, errorMessage];
 }
 
 final class LoginInitial extends LoginState {

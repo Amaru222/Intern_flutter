@@ -58,7 +58,7 @@ class _SettingScreenState extends State<SettingScreen> {
         'title': 'Thay đổi mật khẩu',
         'trailing': Icons.arrow_forward_ios,
         'onTap': () {
-          context.go('/setting/changeassword');
+          context.go('/setting/changepassword');
         },
       },
       {

@@ -6,7 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project/component/bottomnavigationbar.dart';
 import 'package:project/features/attendance/bloc/attendance_bloc.dart';
 import 'package:project/features/attendance/component/search_field.dart';
+import 'package:project/firebase/attendance_repository.dart';
 import 'package:project/firebase/user_repository.dart';
+import 'package:project/model/attendance.dart';
 import 'package:project/model/user.dart';
 
 class AttendanceScreen extends StatefulWidget {
@@ -22,9 +24,13 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   @override
   void initState() {
     super.initState();
-    _attendanceBloc = AttendanceBloc(UserRepository(
-        firebaseAuth: auth.FirebaseAuth.instance,
-        firestore: FirebaseFirestore.instance))
+    _attendanceBloc = AttendanceBloc(
+        UserRepository(
+            firebaseAuth: auth.FirebaseAuth.instance,
+            firestore: FirebaseFirestore.instance),
+        AttendanceRepository(
+            firebaseAuth: auth.FirebaseAuth.instance,
+            firestore: FirebaseFirestore.instance))
       ..add(LoadStudent());
   }
 
@@ -125,12 +131,14 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               itemCount: state.users.length,
                               itemBuilder: (context, index) {
                                 final user = state.users[index];
+                                final attendance = state.userAttendance[0];
                                 return Padding(
                                   padding: const EdgeInsets.only(top: 10),
                                   child: listAttendance(
                                       user: user,
                                       index: index,
-                                      isChecked: state.checkboxstates[index]),
+                                      isChecked: state.checkboxstates[index],
+                                      attendance: attendance),
                                 );
                               })
                         ],
@@ -158,7 +166,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                   color: const Color(0xff59a975),
                                   borderRadius: BorderRadius.circular(10)),
                               child: TextButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    BlocProvider.of<AttendanceBloc>(context)
+                                        .add(AttendButtonPressed());
+                                  },
                                   child: const Text('Vào lớp',
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 14))),
@@ -177,7 +188,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                   color: const Color(0xffc52227),
                                   borderRadius: BorderRadius.circular(10)),
                               child: TextButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    BlocProvider.of<AttendanceBloc>(context)
+                                        .add(LeaveButtonPressed());
+                                  },
                                   child: const Text(
                                     'Ra Ngoài',
                                     style: TextStyle(
@@ -204,7 +218,14 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   }
 
   Widget listAttendance(
-      {required User user, required int index, required bool isChecked}) {
+      {required User user,
+      required int index,
+      required bool isChecked,
+      required Attendance attendance}) {
+    final attendanceStatus = attendance.userAttendance.firstWhere(
+        (att) => att.uid == user.uid,
+        orElse: () => UserAttendance(uid: '', isAttendance: false));
+    bool isUserAttended = attendanceStatus.isAttendance;
     return Container(
         margin: const EdgeInsets.only(right: 16, left: 16),
         padding: const EdgeInsets.only(top: 15, bottom: 15),
@@ -245,14 +266,17 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     padding: const EdgeInsets.only(
                         top: 2, right: 5, left: 5, bottom: 2),
                     decoration: BoxDecoration(
-                      color: const Color(0xff59a975),
+                      color: isUserAttended
+                          ? const Color(0xff59a975)
+                          : const Color(0xfff79525),
                       borderRadius: BorderRadius.circular(3),
                     ),
-                    child: const Row(
+                    child: Row(
                       children: [
                         Text(
-                          'Đã vào lớp',
-                          style: TextStyle(color: Colors.white, fontSize: 14),
+                          isUserAttended ? 'Đã vào lớp' : 'Chưa vào lớp',
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 14),
                         ),
                       ],
                     )),

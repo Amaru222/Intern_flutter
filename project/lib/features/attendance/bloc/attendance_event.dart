@@ -15,5 +15,10 @@ class SelectAllCheckbox extends AttendanceEvent {
   final bool isSelected;
 
   SelectAllCheckbox({required this.isSelected});
-
 }
+
+class AttendButtonPressed extends AttendanceEvent {}
+
+class LeaveButtonPressed extends AttendanceEvent {}
+
+class SearchStudent extends AttendanceEvent {}

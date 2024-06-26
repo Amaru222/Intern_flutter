@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:project/features/auth/component/text_input_field.dart';
 import 'package:project/features/auth/login/bloc/login_bloc.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -52,23 +53,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width * 0.9,
                         height: MediaQuery.of(context).size.height * 0.1,
-                        child: TextFormField(
+                        child: TextInputField(
                           controller: _emailController,
-                          style: const TextStyle(
-                            color: Color(0xfff2b87d),
-                            fontSize: 20,
-                          ),
-                          decoration: InputDecoration(
-                              filled: true,
-                              fillColor: const Color(0xffffdbd2),
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 20.0, horizontal: 20.0),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide.none),
-                              hintText: 'Nhập email hoặc số điện thoại',
-                              hintStyle:
-                                  const TextStyle(color: Color(0xfff2b87d))),
+                          hintText: 'Nhập email hoặc số điện thoại',
                         ),
                       ),
                       BlocBuilder<LoginBloc, LoginState>(
@@ -76,34 +63,18 @@ class _LoginScreenState extends State<LoginScreen> {
                           return SizedBox(
                             width: MediaQuery.of(context).size.width * 0.9,
                             height: MediaQuery.of(context).size.height * 0.1,
-                            child: TextFormField(
+                            child: TextInputField(
                               controller: _passwordController,
-                              style: const TextStyle(
-                                  color: Color(0xfff2b87d), fontSize: 20),
-                              obscureText: state.isPasswordObscured,
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: const Color(0xffffdbd2),
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 20.0, horizontal: 20.0),
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide.none),
-                                hintText: 'Mật khẩu',
-                                hintStyle:
-                                    const TextStyle(color: Color(0xfff2b87d)),
-                                suffixIcon: IconButton(
-                                    onPressed: () {
-                                      context
-                                          .read<LoginBloc>()
-                                          .add(TogglePasswordVisibility());
-                                    },
-                                    icon: Icon(
-                                      state.isPasswordObscured
-                                          ? Icons.visibility_off
-                                          : Icons.visibility,
-                                    )),
-                              ),
+                              hintText: 'Mật khẩu',
+                              isObscured: state.isPasswordObscured,
+                              suffixIcon: state.isPasswordObscured
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              onSuffixIconPressed: () {
+                                context
+                                    .read<LoginBloc>()
+                                    .add(TogglePasswordVisibility());
+                              },
                             ),
                           );
                         },

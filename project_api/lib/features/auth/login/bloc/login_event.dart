@@ -8,8 +8,8 @@ sealed class LoginEvent {
 class TogglePasswordVisibility extends LoginEvent {}
 
 class LoginRequest extends LoginEvent {
-  final String email;
+  final String username;
   final String password;
 
-  const LoginRequest({required this.email, required this.password});
+  const LoginRequest({required this.username, required this.password});
 }

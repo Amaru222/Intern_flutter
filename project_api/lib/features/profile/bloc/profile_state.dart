@@ -6,14 +6,12 @@ sealed class ProfileState {
 
 final class ProfileInitial extends ProfileState {}
 
-class ProfileLoaded extends ProfileState {
-  final List<Map<String, dynamic>> profileItems;
-  final String nameUser;
-  final String classInfo;
-  final String title;
+class ProfileLoading extends ProfileState {}
 
-  const ProfileLoaded(
-      this.profileItems, this.nameUser, this.classInfo, this.title);
+class ProfileLoaded extends ProfileState {
+  final Map<String, dynamic> userProfile;
+
+  ProfileLoaded(this.userProfile);
 }
 
 class ProfileError extends ProfileState {

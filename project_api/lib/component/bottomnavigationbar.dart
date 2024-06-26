@@ -44,7 +44,8 @@ class BottomBar extends StatelessWidget {
             label: 'Cài đặt'),
       ],
       onTap: (value) {
-        final routes = ['', 'attendance', 'message', 'setting'];
+        final routes = ['home', 'attendance', 'message', 'setting'];
+        print(routes[value]);
         context.go('/${routes[value]}');
       },
     );

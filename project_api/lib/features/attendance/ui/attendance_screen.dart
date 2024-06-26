@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,13 +22,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   @override
   void initState() {
     super.initState();
-    _attendanceBloc = AttendanceBloc(
-        UserRepository(
-            firebaseAuth: auth.FirebaseAuth.instance,
-            firestore: FirebaseFirestore.instance),
-        AttendanceRepository(
-            firebaseAuth: auth.FirebaseAuth.instance,
-            firestore: FirebaseFirestore.instance))
+    _attendanceBloc = AttendanceBloc(UserRepository(), AttendanceRepository())
       ..add(LoadStudent());
   }
 
@@ -222,10 +214,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       required int index,
       required bool isChecked,
       required Attendance attendance}) {
-    final attendanceStatus = attendance.userAttendance.firstWhere(
-        (att) => att.uid == user.uid,
-        orElse: () => UserAttendance(uid: '', isAttendance: false));
-    bool isUserAttended = attendanceStatus.isAttendance;
     return Container(
         margin: const EdgeInsets.only(right: 16, left: 16),
         padding: const EdgeInsets.only(top: 15, bottom: 15),
@@ -254,9 +242,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 const SizedBox(
                   width: 5,
                 ),
-                Text(
-                  user.name,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                const Text(
+                  'hihi',
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -266,17 +254,16 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     padding: const EdgeInsets.only(
                         top: 2, right: 5, left: 5, bottom: 2),
                     decoration: BoxDecoration(
-                      color: isUserAttended
+                      color: true
                           ? const Color(0xff59a975)
                           : const Color(0xfff79525),
                       borderRadius: BorderRadius.circular(3),
                     ),
-                    child: Row(
+                    child: const Row(
                       children: [
                         Text(
-                          isUserAttended ? 'Đã vào lớp' : 'Chưa vào lớp',
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 14),
+                          true ? 'Đã vào lớp' : 'Chưa vào lớp',
+                          style: TextStyle(color: Colors.white, fontSize: 14),
                         ),
                       ],
                     )),

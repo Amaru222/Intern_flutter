@@ -1,9 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:project/component/bottomnavigationbar.dart';
 import 'package:project/features/setting/bloc/setting_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -21,12 +21,9 @@ class _SettingScreenState extends State<SettingScreen> {
         child: BlocBuilder<SettingBloc, SettingState>(
           builder: (context, state) {
             if (state is SettingInitial) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return buildSettingUI();
             } else if (state is SettingLoaded) {
-              return buildSettingUI(
-                  state.nameUser, state.classInfo, state.title);
+              return buildSettingUI();
             } else if (state is SettingError) {
               return Center(
                 child: Text(state.message),
@@ -43,7 +40,7 @@ class _SettingScreenState extends State<SettingScreen> {
     );
   }
 
-  Widget buildSettingUI(String nameUser, String classInfo, String title) {
+  Widget buildSettingUI() {
     final List<Map<String, dynamic>> settingsItems = [
       {
         'icon': 'assets/images/icon_setting_screen/profile.png',
@@ -93,9 +90,10 @@ class _SettingScreenState extends State<SettingScreen> {
         'title': 'Đăng xuất',
         'trailing': Icons.arrow_forward_ios,
         'onTap': () async {
-          await FirebaseAuth.instance.signOut();
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.remove('token');
           // ignore: use_build_context_synchronously
-          context.go('/login');
+          context.go('/');
         },
       },
     ];
@@ -129,17 +127,16 @@ class _SettingScreenState extends State<SettingScreen> {
                 const SizedBox(
                   height: 50,
                 ),
-                Text(
-                  nameUser,
-                  style: const TextStyle(
+                const Text(
+                  'le duc',
+                  style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Color(0xff181818),
                       fontSize: 16),
                 ),
-                Text(
-                  '$title : $classInfo',
-                  style:
-                      const TextStyle(fontSize: 13, color: Color(0xff181818)),
+                const Text(
+                  'giao vien : 1a',
+                  style: TextStyle(fontSize: 13, color: Color(0xff181818)),
                 ),
                 const SizedBox(
                   height: 20,

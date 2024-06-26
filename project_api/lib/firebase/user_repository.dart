@@ -1,31 +1,18 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:project/model/user.dart';
-import 'package:firebase_auth/firebase_auth.dart' as auth;
 
 class UserRepository {
-  final FirebaseFirestore firestore;
-  final auth.FirebaseAuth firebaseAuth;
-  UserRepository({required this.firestore, required this.firebaseAuth});
+  final Dio _dio = Dio();
 
-  Future<String?> getCurrentUserUid() async {
-    final user = firebaseAuth.currentUser;
-    return user?.uid;
-  }
+  Future<User> login(String username, String password) async {
+    final response = await _dio.post(
+        'https://api-school-mng-dev.vais.vn/api/v2/auth/login',
+        data: {'username': username, 'password': password});
 
-  Future<User?> fetchUserByUid(String uid) async {
-    final snapshot = await firestore.collection('users').doc(uid).get();
-    if (snapshot.exists) {
-      return User.fromMap(snapshot.data()!);
+    if (response.statusCode == 200) {
+      return User.fromJson(response.data);
+    } else {
+      throw Exception('Failed to login');
     }
-    return null;
-  }
-
-  Future<List<User>> fetchStudentsInClass(String className) async {
-    final snapshot = await firestore
-        .collection('users')
-        .where('role', isEqualTo: 2)
-        .where('class', isEqualTo: className)
-        .get();
-    return snapshot.docs.map((doc) => User.fromMap(doc.data())).toList();
   }
 }

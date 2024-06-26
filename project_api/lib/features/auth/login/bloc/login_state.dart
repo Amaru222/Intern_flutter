@@ -6,26 +6,29 @@ enum LoginStatus { initial, loading, success, failure }
 class LoginState {
   final bool isPasswordObscured;
   final LoginStatus status;
-  final String errorMessage;
+  final String? errorMessage;
+  final Map<String, dynamic>? user;
   const LoginState(
-      {required this.isPasswordObscured,
-      required this.status,
-      required this.errorMessage});
+      {this.isPasswordObscured = true,
+      this.status = LoginStatus.initial,
+      this.errorMessage,
+      this.user});
 
-  LoginState copyWith(
-      {bool? isPasswordObscured, LoginStatus? status, String? errorMessage}) {
+  LoginState copyWith({
+    bool? isPasswordObscured,
+    LoginStatus? status,
+    String? errorMessage,
+    Map<String, dynamic>? user,
+  }) {
     return LoginState(
       isPasswordObscured: isPasswordObscured ?? this.isPasswordObscured,
       status: status ?? this.status,
       errorMessage: errorMessage ?? this.errorMessage,
+      user: user ?? this.user,
     );
   }
 }
 
 final class LoginInitial extends LoginState {
-  const LoginInitial()
-      : super(
-            isPasswordObscured: true,
-            status: LoginStatus.initial,
-            errorMessage: '');
+  const LoginInitial() : super();
 }

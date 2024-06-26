@@ -1,4 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -19,7 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    _loginBloc = LoginBloc(firebaseAuth: FirebaseAuth.instance);
+    _loginBloc = LoginBloc(dio: Dio());
   }
 
   @override
@@ -101,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     : () {
                                         context.read<LoginBloc>().add(
                                             LoginRequest(
-                                                email: _emailController.text,
+                                                username: _emailController.text,
                                                 password:
                                                     _passwordController.text));
                                       },

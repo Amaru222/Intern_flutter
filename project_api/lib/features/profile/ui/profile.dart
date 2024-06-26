@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -15,7 +16,7 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocProvider(
-        create: (context) => ProfileBloc()..add(LoadDataProfile()),
+        create: (context) => ProfileBloc(dio: Dio())..add(LoadDataProfile()),
         child: BlocBuilder<ProfileBloc, ProfileState>(
           builder: (context, state) {
             if (state is ProfileInitial) {
@@ -23,8 +24,7 @@ class _ProfileState extends State<Profile> {
                 child: CircularProgressIndicator(),
               );
             } else if (state is ProfileLoaded) {
-              return builProfileUI(state.profileItems, state.nameUser,
-                  state.classInfo, state.title);
+              return builProfileUI(state.userProfile);
             } else if (state is ProfileError) {
               return Center(
                 child: Text(state.message),
@@ -40,8 +40,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget builProfileUI(List<Map<String, dynamic>> profileItems, String nameUser,
-      String classInfo, String title) {
+  Widget builProfileUI(Map<String, dynamic> userProfile) {
     return Container(
       width: MediaQuery.of(context).size.width * 1,
       decoration: const BoxDecoration(color: Colors.white),
@@ -80,18 +79,18 @@ class _ProfileState extends State<Profile> {
                   borderRadius: BorderRadius.circular(8)),
               width: MediaQuery.of(context).size.width * 0.9,
               height: 80,
-              child: Row(
+              child: const Row(
                 children: [
-                  const SizedBox(
+                  SizedBox(
                     width: 10,
                   ),
-                  const Image(
+                  Image(
                     image: AssetImage('assets/images/avatar.png'),
                     fit: BoxFit.fill,
                     height: 60,
                     width: 60,
                   ),
-                  const SizedBox(
+                  SizedBox(
                     width: 10,
                   ),
                   Column(
@@ -99,16 +98,16 @@ class _ProfileState extends State<Profile> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        nameUser,
-                        style: const TextStyle(
+                        'xxx',
+                        style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                             color: Color(0xff181818)),
                       ),
                       Text(
-                        '$title: $classInfo',
-                        style: const TextStyle(
-                            color: Color(0xff181818), fontSize: 13),
+                        'xxx: ',
+                        style:
+                            TextStyle(color: Color(0xff181818), fontSize: 13),
                       ),
                     ],
                   ),
@@ -130,23 +129,22 @@ class _ProfileState extends State<Profile> {
                     padding: EdgeInsets.zero,
                     itemCount: 4,
                     itemBuilder: (context, index) {
-                      final item = profileItems[index];
                       return ListTile(
                         dense: true,
                         contentPadding:
                             const EdgeInsets.symmetric(horizontal: 10),
-                        leading: Text(
-                          item['field'],
-                          style: const TextStyle(
+                        leading: const Text(
+                          'xxxxx',
+                          style: TextStyle(
                               color: Color(0xff6b6b6b),
                               fontSize: 14,
                               fontWeight: FontWeight.w500),
                         ),
-                        trailing: Text(
-                          item['data'],
-                          style: const TextStyle(fontSize: 14),
+                        trailing: const Text(
+                          'xxxx',
+                          style: TextStyle(fontSize: 14),
                         ),
-                        onTap: item['onTap'],
+                        onTap: () {},
                       );
                     },
                   ),

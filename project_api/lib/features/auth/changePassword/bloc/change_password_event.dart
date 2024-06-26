@@ -1,6 +1,6 @@
 part of 'change_password_bloc.dart';
 
-sealed class ChangePasswordEvent extends Equatable {
+sealed class ChangePasswordEvent {
   const ChangePasswordEvent();
 
   @override

@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:project/apis/user_info.dart';
 import 'package:project/features/profile/bloc/profile_bloc.dart';
 
 class Profile extends StatefulWidget {
@@ -12,11 +13,13 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  final userInfoGetApi = UserInfoGetApi(dio: Dio());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocProvider(
-        create: (context) => ProfileBloc(dio: Dio())..add(LoadDataProfile()),
+        create: (context) =>
+            ProfileBloc(userInfoGetApi: userInfoGetApi)..add(LoadDataProfile()),
         child: BlocBuilder<ProfileBloc, ProfileState>(
           builder: (context, state) {
             if (state is ProfileInitial) {
@@ -41,6 +44,38 @@ class _ProfileState extends State<Profile> {
   }
 
   Widget builProfileUI(Map<String, dynamic> userProfile) {
+    String nameUser = userProfile['data']['record']['name'] ?? '';
+    String role = userProfile['data']['record']['roleInfo']['role'] ?? '';
+    String nameRole = '';
+    if (role == 'teacher') {
+      nameRole = userProfile['data']['record']['teacher']['name'] ?? '';
+    } else {
+      nameRole = userProfile['data']['record']['parents']['name'] ?? '';
+    }
+    String classInfo =
+        userProfile['data']['record']['teacher']['class']['name'] ?? '';
+    List<Map<String, dynamic>> profileItems = [
+      {
+        'field': 'Ngày sinh',
+        'data': '15/11/1999',
+        'onTap': () {},
+      },
+      {
+        'field': 'Email',
+        'data': userProfile['data']['record']['email'] ?? '',
+        'onTap': () {},
+      },
+      {
+        'field': 'Số điện thoại',
+        'data': userProfile['data']['record']['phone'] ?? '',
+        'onTap': () {},
+      },
+      {
+        'field': 'Địa chỉ',
+        'data': userProfile['data']['record']['address'] ?? '',
+        'onTap': () {},
+      },
+    ];
     return Container(
       width: MediaQuery.of(context).size.width * 1,
       decoration: const BoxDecoration(color: Colors.white),
@@ -79,18 +114,18 @@ class _ProfileState extends State<Profile> {
                   borderRadius: BorderRadius.circular(8)),
               width: MediaQuery.of(context).size.width * 0.9,
               height: 80,
-              child: const Row(
+              child: Row(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
-                  Image(
+                  const Image(
                     image: AssetImage('assets/images/avatar.png'),
                     fit: BoxFit.fill,
                     height: 60,
                     width: 60,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
                   Column(
@@ -98,16 +133,16 @@ class _ProfileState extends State<Profile> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'xxx',
-                        style: TextStyle(
+                        nameUser,
+                        style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                             color: Color(0xff181818)),
                       ),
                       Text(
-                        'xxx: ',
-                        style:
-                            TextStyle(color: Color(0xff181818), fontSize: 13),
+                        '$nameRole : $classInfo',
+                        style: const TextStyle(
+                            color: Color(0xff181818), fontSize: 13),
                       ),
                     ],
                   ),
@@ -129,22 +164,23 @@ class _ProfileState extends State<Profile> {
                     padding: EdgeInsets.zero,
                     itemCount: 4,
                     itemBuilder: (context, index) {
+                      final item = profileItems[index];
                       return ListTile(
                         dense: true,
                         contentPadding:
                             const EdgeInsets.symmetric(horizontal: 10),
-                        leading: const Text(
-                          'xxxxx',
-                          style: TextStyle(
+                        leading: Text(
+                          item['field'],
+                          style: const TextStyle(
                               color: Color(0xff6b6b6b),
                               fontSize: 14,
                               fontWeight: FontWeight.w500),
                         ),
-                        trailing: const Text(
-                          'xxxx',
-                          style: TextStyle(fontSize: 14),
+                        trailing: Text(
+                          item['data'],
+                          style: const TextStyle(fontSize: 14),
                         ),
-                        onTap: () {},
+                        onTap: item['onTap'],
                       );
                     },
                   ),

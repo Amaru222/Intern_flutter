@@ -45,7 +45,6 @@ class BottomBar extends StatelessWidget {
       ],
       onTap: (value) {
         final routes = ['home', 'attendance', 'message', 'setting'];
-        print(routes[value]);
         context.go('/${routes[value]}');
       },
     );

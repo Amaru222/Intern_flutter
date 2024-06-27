@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:project/firebase/attendance_repository.dart';
-import 'package:project/firebase/user_repository.dart';
+import 'package:project/apis/attendance_repository.dart';
+import 'package:project/apis/user_repository.dart';
 import 'package:project/model/attendance.dart';
 import 'package:project/model/user.dart';
 part 'attendance_event.dart';

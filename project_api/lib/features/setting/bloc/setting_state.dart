@@ -8,11 +8,9 @@ sealed class SettingState {
 final class SettingInitial extends SettingState {}
 
 class SettingLoaded extends SettingState {
-  final String nameUser;
-  final String classInfo;
-  final String title;
+  final Map<String, dynamic> userProfile;
 
-  const SettingLoaded(this.nameUser, this.classInfo, this.title);
+  const SettingLoaded(this.userProfile);
 }
 
 class SettingError extends SettingState {

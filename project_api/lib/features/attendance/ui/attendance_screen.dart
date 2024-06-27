@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project/component/bottomnavigationbar.dart';
 import 'package:project/features/attendance/bloc/attendance_bloc.dart';
 import 'package:project/features/attendance/component/search_field.dart';
-import 'package:project/firebase/attendance_repository.dart';
-import 'package:project/firebase/user_repository.dart';
+import 'package:project/apis/attendance_repository.dart';
+import 'package:project/apis/user_repository.dart';
 import 'package:project/model/attendance.dart';
 import 'package:project/model/user.dart';
 

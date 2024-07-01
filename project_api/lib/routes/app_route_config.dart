@@ -9,7 +9,6 @@ import 'package:project/features/message/ui/message_screen.dart';
 import 'package:project/features/profile/ui/profile.dart';
 import 'package:project/features/setting/ui/setting_screen.dart';
 import 'package:project/routes/app_route_constants.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class MyAppRoute {
   late final GoRouter router =

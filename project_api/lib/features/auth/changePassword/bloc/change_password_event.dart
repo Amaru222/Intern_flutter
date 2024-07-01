@@ -2,7 +2,17 @@ part of 'change_password_bloc.dart';
 
 sealed class ChangePasswordEvent {
   const ChangePasswordEvent();
+}
 
-  @override
-  List<Object> get props => [];
+class TogglePasswordVisibility extends ChangePasswordEvent {
+  final int index;
+
+  TogglePasswordVisibility(this.index);
+}
+
+class ChangePasswordSubmitted extends ChangePasswordEvent {
+  final String passwordOld;
+  final String passwordNew;
+
+  ChangePasswordSubmitted(this.passwordOld, this.passwordNew);
 }

@@ -1,8 +1,8 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:project/apis/user_info.dart';
+import 'package:project/apis/dio_factory.dart';
+import 'package:project/services/user_info.dart';
 import 'package:project/component/bottomnavigationbar.dart';
 import 'package:project/features/setting/bloc/setting_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,7 +17,8 @@ class SettingScreen extends StatefulWidget {
 class _SettingScreenState extends State<SettingScreen> {
   @override
   Widget build(BuildContext context) {
-    final userInfoGetApi = UserInfoGetApi(dio: Dio());
+    final dio = createDio();
+    final userInfoGetApi = UserInfoGetApi(dio: dio);
     return Scaffold(
       body: BlocProvider(
         create: (context) =>

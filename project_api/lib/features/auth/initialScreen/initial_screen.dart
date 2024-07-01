@@ -19,7 +19,8 @@ class _InitialScreenState extends State<InitialScreen> {
   Future<void> _checkTokenAndNavigate() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
-
+    final refreshToken = prefs.getString('refreshToken');
+    print(refreshToken);
     if (token == null || token.isEmpty) {
       context.go('/login');
     } else {

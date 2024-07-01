@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:dio/dio.dart';
-import 'package:project/apis/user_info.dart';
+
+import 'package:project/services/user_info.dart';
 
 part 'profile_event.dart';
 part 'profile_state.dart';

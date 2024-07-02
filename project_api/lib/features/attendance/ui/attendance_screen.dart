@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:project/apis/dio_factory.dart';
 import 'package:project/component/bottomnavigationbar.dart';
 import 'package:project/features/attendance/bloc/attendance_bloc.dart';
 import 'package:project/features/attendance/component/search_field.dart';
-import 'package:project/apis/attendance_repository.dart';
-import 'package:project/apis/user_repository.dart';
-import 'package:project/model/attendance.dart';
-import 'package:project/model/user.dart';
+import 'package:project/services/attendance_service.dart';
 
 class AttendanceScreen extends StatefulWidget {
   const AttendanceScreen({super.key});
@@ -18,12 +16,14 @@ class AttendanceScreen extends StatefulWidget {
 
 class _AttendanceScreenState extends State<AttendanceScreen> {
   late AttendanceBloc _attendanceBloc;
-
+  DateTime _selectedDate = DateTime.now();
   @override
   void initState() {
+    final dio = createDio();
+    final attendanceService = AttendanceService(dio: dio);
+
     super.initState();
-    _attendanceBloc = AttendanceBloc(UserRepository(), AttendanceRepository())
-      ..add(LoadStudent());
+    _attendanceBloc = AttendanceBloc(attendanceService)..add(LoadStudent());
   }
 
   @override
@@ -32,16 +32,30 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     super.dispose();
   }
 
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+      });
+      final formattedDate = DateFormat('yyyy-MM-dd').format(_selectedDate);
+      _attendanceBloc.add(ChangeDate(formattedDate));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    DateTime now = DateTime.now();
-    String formattedDate = "Ngày ${now.day}/${now.month}/${now.year}";
     return Scaffold(
       body: BlocProvider(
         create: (context) => _attendanceBloc,
         child: BlocBuilder<AttendanceBloc, AttendanceState>(
           builder: (context, state) {
-            if (state is AttendanceLoading) {
+            if (state is AttendanceInitial) {
               return const Center(
                 child: CircularProgressIndicator(),
               );
@@ -74,12 +88,22 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left: 18),
-                            child: Text(
-                              formattedDate,
-                              style: const TextStyle(
-                                  color: Color(0xff141416),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14),
+                            child: GestureDetector(
+                              onTap: () => _selectDate(context),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.calendar_today),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    DateFormat('dd/MM/yyyy')
+                                        .format(_selectedDate),
+                                    style: const TextStyle(
+                                        color: Color(0xff141416),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           const SizedBox(height: 15),
@@ -88,11 +112,11 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 18),
+                              const Padding(
+                                padding: EdgeInsets.only(left: 18),
                                 child: Text(
-                                  '${state.users.length} học sinh',
-                                  style: const TextStyle(
+                                  ' Học sinh',
+                                  style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 16,
                                   ),
@@ -102,7 +126,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                 padding: const EdgeInsets.only(right: 18),
                                 child: GestureDetector(
                                     onTap: () {
-                                      bool allSelected = state.checkboxstates
+                                      bool allSelected = state
+                                          .selectedCheckboxes
                                           .every((element) => element);
                                       _attendanceBloc.add(SelectAllCheckbox(
                                           isSelected: !allSelected));
@@ -120,17 +145,16 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           ListView.builder(
                               padding: EdgeInsets.zero,
                               shrinkWrap: true,
-                              itemCount: state.users.length,
+                              itemCount:
+                                  state.listStudent['data']['items'].length,
                               itemBuilder: (context, index) {
-                                final user = state.users[index];
-                                final attendance = state.userAttendance[0];
                                 return Padding(
                                   padding: const EdgeInsets.only(top: 10),
                                   child: listAttendance(
-                                      user: user,
                                       index: index,
-                                      isChecked: state.checkboxstates[index],
-                                      attendance: attendance),
+                                      isChecked:
+                                          state.selectedCheckboxes[index],
+                                      listStudent: state.listStudent),
                                 );
                               })
                         ],
@@ -210,10 +234,26 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   }
 
   Widget listAttendance(
-      {required User user,
-      required int index,
+      {required int index,
       required bool isChecked,
-      required Attendance attendance}) {
+      required Map<String, dynamic> listStudent}) {
+    final name = listStudent['data']['items'][index]['name'];
+    // final avatar = listStudent['data']['items'][index]['avatar']['url'];
+
+    final typeAttendance =
+        listStudent['data']['items'][index]['attendance']['type'];
+    String textTypeAttendance;
+    final Color colorTypeAttendance;
+    if (typeAttendance == 'absence') {
+      textTypeAttendance = 'Vắng mặt';
+      colorTypeAttendance = const Color.fromARGB(255, 227, 48, 48);
+    } else if (typeAttendance == 'check-in') {
+      textTypeAttendance = 'Đã vào lớp';
+      colorTypeAttendance = const Color(0xff59a975);
+    } else {
+      textTypeAttendance = 'Chưa vào lớp';
+      colorTypeAttendance = const Color(0xfff79525);
+    }
     return Container(
         margin: const EdgeInsets.only(right: 16, left: 16),
         padding: const EdgeInsets.only(top: 15, bottom: 15),
@@ -242,9 +282,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 const SizedBox(
                   width: 5,
                 ),
-                const Text(
-                  'hihi',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                Text(
+                  name,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -254,16 +294,15 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     padding: const EdgeInsets.only(
                         top: 2, right: 5, left: 5, bottom: 2),
                     decoration: BoxDecoration(
-                      color: true
-                          ? const Color(0xff59a975)
-                          : const Color(0xfff79525),
+                      color: colorTypeAttendance,
                       borderRadius: BorderRadius.circular(3),
                     ),
-                    child: const Row(
+                    child: Row(
                       children: [
                         Text(
-                          true ? 'Đã vào lớp' : 'Chưa vào lớp',
-                          style: TextStyle(color: Colors.white, fontSize: 14),
+                          textTypeAttendance,
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 14),
                         ),
                       ],
                     )),

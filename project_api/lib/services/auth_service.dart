@@ -9,7 +9,6 @@ class AuthService {
   Future<void> refreshToken() async {
     final prefs = await SharedPreferences.getInstance();
     final refreshToken = prefs.getString('refreshToken');
-    print(refreshToken);
     if (refreshToken == null) {
       throw Exception('Refresh token not found');
     }
@@ -18,6 +17,7 @@ class AuthService {
         'https://api-school-mng-dev.vais.vn/api/v2/auth/refresh-token',
         data: {'refreshToken': refreshToken},
       );
+
       if (response.statusCode == 200) {
         final newRefreshToken =
             response.data['data']['tokens']['refresh']['token'];

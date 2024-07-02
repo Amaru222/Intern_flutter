@@ -4,6 +4,7 @@ import 'package:project/features/attendance/ui/attendance_screen.dart';
 import 'package:project/features/auth/changePassword/ui/change_password.dart';
 import 'package:project/features/auth/initialScreen/initial_screen.dart';
 import 'package:project/features/auth/login/ui/login_screen.dart';
+import 'package:project/features/comment/ui/review_screen.dart';
 import 'package:project/features/home/ui/home_screen.dart';
 import 'package:project/features/message/ui/message_screen.dart';
 import 'package:project/features/profile/ui/profile.dart';
@@ -14,52 +15,58 @@ class MyAppRoute {
   late final GoRouter router =
       GoRouter(initialLocation: '/', routes: <RouteBase>[
     GoRoute(
-        name: 'initial',
-        path: '/',
+        name: MyAppRouteName.initialRouteName,
+        path: MyAppRoutePath.initialRoutePath,
         pageBuilder: (context, state) {
           return const MaterialPage(child: InitialScreen());
         }),
     GoRoute(
-        name: MyAppRouteConstants.loginRouteName,
-        path: '/login',
+        name: MyAppRouteName.loginRouteName,
+        path: MyAppRoutePath.loginRoutePath,
         pageBuilder: (context, state) {
           return const MaterialPage(child: LoginScreen());
         }),
     GoRoute(
-        name: MyAppRouteConstants.homeRouteName,
-        path: '/home',
+        name: MyAppRouteName.homeRouteName,
+        path: MyAppRoutePath.homeRoutePath,
         pageBuilder: (context, state) {
-          return const MaterialPage(child: HomeScreen());
+          return const MaterialPage(child: ReviewScreen());
         }),
     GoRoute(
-        name: MyAppRouteConstants.messageRouteName,
-        path: '/message',
+        name: MyAppRouteName.messageRouteName,
+        path: MyAppRoutePath.messageRoutePath,
         pageBuilder: (context, state) {
           return const MaterialPage(child: MessageScreen());
         }),
     GoRoute(
-        name: MyAppRouteConstants.settingRouteName,
-        path: '/setting',
+        name: MyAppRouteName.settingRouteName,
+        path: MyAppRoutePath.settingRoutePath,
         pageBuilder: (context, state) {
           return const MaterialPage(child: SettingScreen());
         }),
     GoRoute(
-        name: MyAppRouteConstants.attendanceRouteName,
-        path: '/attendance',
+        name: MyAppRouteName.attendanceRouteName,
+        path: MyAppRoutePath.attendanceRoutePath,
         pageBuilder: (context, state) {
           return const MaterialPage(child: AttendanceScreen());
         }),
     GoRoute(
-        name: MyAppRouteConstants.profileRouteName,
-        path: '/setting/profile',
+        name: MyAppRouteName.profileRouteName,
+        path: MyAppRoutePath.profileRoutePath,
         pageBuilder: (context, state) {
           return const MaterialPage(child: Profile());
         }),
     GoRoute(
-        name: MyAppRouteConstants.changePasswordRouteName,
-        path: '/setting/changepassword',
+        name: MyAppRouteName.changePasswordRouteName,
+        path: MyAppRoutePath.changePasswordRoutePath,
         pageBuilder: (context, state) {
           return const MaterialPage(child: ChangePassword());
+        }),
+    GoRoute(
+        name: MyAppRouteName.commentRouteName,
+        path: MyAppRoutePath.commentRoutePath,
+        pageBuilder: (context, state) {
+          return const MaterialPage(child: ReviewScreen());
         }),
   ]);
 }

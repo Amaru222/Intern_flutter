@@ -12,6 +12,7 @@ class TokenInterceptor extends Interceptor {
   Future<void> onError(
       DioException err, ErrorInterceptorHandler handler) async {
     if (err.response?.statusCode == 401) {
+      // print('hihi');
       try {
         await authService.refreshToken();
         final prefs = await SharedPreferences.getInstance();

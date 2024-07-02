@@ -20,7 +20,6 @@ class _InitialScreenState extends State<InitialScreen> {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     final refreshToken = prefs.getString('refreshToken');
-    print(refreshToken);
     if (token == null || token.isEmpty) {
       context.go('/login');
     } else {

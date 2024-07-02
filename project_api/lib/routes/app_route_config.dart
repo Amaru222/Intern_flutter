@@ -4,7 +4,7 @@ import 'package:project/features/attendance/ui/attendance_screen.dart';
 import 'package:project/features/auth/changePassword/ui/change_password.dart';
 import 'package:project/features/auth/initialScreen/initial_screen.dart';
 import 'package:project/features/auth/login/ui/login_screen.dart';
-import 'package:project/features/comment/ui/review_screen.dart';
+import 'package:project/features/review/ui/review_screen.dart';
 import 'package:project/features/home/ui/home_screen.dart';
 import 'package:project/features/message/ui/message_screen.dart';
 import 'package:project/features/profile/ui/profile.dart';

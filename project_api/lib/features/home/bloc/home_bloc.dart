@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
-import 'package:project/apis/refreshToken/auth_service.dart';
+import 'package:project/services/auth_service.dart';
 import 'package:project/apis/refreshToken/token_interceptor.dart';
 
 part 'home_event.dart';

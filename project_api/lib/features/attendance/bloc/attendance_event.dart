@@ -22,3 +22,9 @@ class AttendButtonPressed extends AttendanceEvent {}
 class LeaveButtonPressed extends AttendanceEvent {}
 
 class SearchStudent extends AttendanceEvent {}
+
+class ChangeDate extends AttendanceEvent {
+  final String date;
+
+  ChangeDate(this.date);
+}

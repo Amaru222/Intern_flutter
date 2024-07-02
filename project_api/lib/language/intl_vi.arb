@@ -1,0 +1,13 @@
+
+{
+  "title": "Cài đặt",
+  "profile": "Thông tin chi tiết",
+  "changePassword": "Thay đổi mật khẩu",
+  "language": "Ngôn ngữ",
+  "notificationSettings": "Cài đặt thông báo",
+  "userGuide": "Hướng dẫn sử dụng",
+  "version": "Phiên bản",
+  "logout": "Đăng xuất",
+  "vietnamese": "Tiếng Việt",
+  "english": "Tiếng Anh"
+}

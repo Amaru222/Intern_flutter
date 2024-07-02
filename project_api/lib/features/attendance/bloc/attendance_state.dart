@@ -8,13 +8,9 @@ final class AttendanceInitial extends AttendanceState {}
 class AttendanceLoading extends AttendanceState {}
 
 class AttendanceLoaded extends AttendanceState {
-  final List<User> users;
-  final List<bool> checkboxstates;
-  final List<Attendance> userAttendance;
-  AttendanceLoaded(
-      {required this.users,
-      required this.checkboxstates,
-      required this.userAttendance});
+  final Map<String, dynamic> listStudent;
+  final List<bool> selectedCheckboxes;
+  AttendanceLoaded(this.listStudent, {required this.selectedCheckboxes});
 }
 
 class AttendanceError extends AttendanceState {

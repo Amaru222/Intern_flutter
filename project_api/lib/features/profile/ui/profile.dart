@@ -1,8 +1,8 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:project/apis/user_info.dart';
+import 'package:project/apis/dio_factory.dart';
+import 'package:project/services/user_info.dart';
 import 'package:project/features/profile/bloc/profile_bloc.dart';
 
 class Profile extends StatefulWidget {
@@ -13,9 +13,10 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  final userInfoGetApi = UserInfoGetApi(dio: Dio());
   @override
   Widget build(BuildContext context) {
+    final dio = createDio();
+    final userInfoGetApi = UserInfoGetApi(dio: dio);
     return Scaffold(
       body: BlocProvider(
         create: (context) =>

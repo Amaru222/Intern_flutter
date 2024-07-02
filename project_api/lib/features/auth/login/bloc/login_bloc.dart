@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 
-import 'package:flutter/rendering.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -34,12 +33,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       });
       // print('Response: ${response.data}');
       if (response.statusCode == 200) {
-        // final data = response.data;
-        // final accessToken = data['data']['tokens']['access']['token'];
-        // final refreshToken = data['data']['tokens']['refresh']['token'];
-        // final prefs = await SharedPreferences.getInstance();
-        // await prefs.setString('token', accessToken);
-        // await prefs.setString('token', refreshToken);
+        final data = response.data;
+        final accessToken = data['data']['tokens']['access']['token'];
+        final refreshToken = data['data']['tokens']['refresh']['token'];
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('token', accessToken);
+        await prefs.setString('refreshToken', refreshToken);
         emit(state.copyWith(status: LoginStatus.success, user: response.data));
       } else {
         emit(state.copyWith(

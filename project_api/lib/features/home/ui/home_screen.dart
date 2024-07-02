@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 import 'package:project/component/bottomnavigationbar.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -166,21 +167,28 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-}
 
-Widget _buildIconButton(String nameIcon, String label) {
-  return Column(
-    children: [
-      IconButton(
-        icon: Image.asset(nameIcon),
-        color: Colors.red,
-        onPressed: () {},
-      ),
-      Text(
-        label,
-        style: const TextStyle(fontSize: 12),
-        textAlign: TextAlign.center,
-      ),
-    ],
-  );
+  Widget _buildIconButton(String nameIcon, String label) {
+    return Column(
+      children: [
+        IconButton(
+          icon: Image.asset(nameIcon),
+          color: Colors.red,
+          onPressed: () {
+            if (label == 'Nhận xét') {
+              context.go('/home/review');
+            } else if (label == 'Thời khóa biểu') {
+            } else if (label == 'Điểm danh') {
+            } else if (label == 'Lịch thi') {
+            } else if (label == 'Bảng điểm') {}
+          },
+        ),
+        Text(
+          label,
+          style: const TextStyle(fontSize: 12),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
 }

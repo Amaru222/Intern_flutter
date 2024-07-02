@@ -19,11 +19,8 @@ class AuthService {
       );
 
       if (response.statusCode == 200) {
-        final newAccessToken =
-            response.data['data']['tokens']['access']['token'];
         final newRefreshToken =
             response.data['data']['tokens']['refresh']['token'];
-        await prefs.setString('token', newAccessToken);
         await prefs.setString('refreshToken', newRefreshToken);
       } else {
         throw Exception('Failed to refresh token');

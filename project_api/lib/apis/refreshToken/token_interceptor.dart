@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import './auth_service.dart';
+import '../../services/auth_service.dart';
 
 class TokenInterceptor extends Interceptor {
   final Dio dio;
@@ -12,6 +12,7 @@ class TokenInterceptor extends Interceptor {
   Future<void> onError(
       DioException err, ErrorInterceptorHandler handler) async {
     if (err.response?.statusCode == 401) {
+      // print('hihi');
       try {
         await authService.refreshToken();
         final prefs = await SharedPreferences.getInstance();
@@ -19,7 +20,6 @@ class TokenInterceptor extends Interceptor {
         final options = Options(
           headers: {'Authorization': 'Bearer $newToken'},
         );
-
         final response = await dio.request(
           err.requestOptions.path,
           options: options,

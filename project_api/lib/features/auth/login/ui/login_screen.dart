@@ -60,22 +60,18 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       BlocBuilder<LoginBloc, LoginState>(
                         builder: (context, state) {
-                          return SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            height: MediaQuery.of(context).size.height * 0.1,
-                            child: TextInputField(
-                              controller: _passwordController,
-                              hintText: 'Mật khẩu',
-                              isObscured: state.isPasswordObscured,
-                              suffixIcon: state.isPasswordObscured
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
-                              onSuffixIconPressed: () {
-                                context
-                                    .read<LoginBloc>()
-                                    .add(TogglePasswordVisibility());
-                              },
-                            ),
+                          return TextInputField(
+                            controller: _passwordController,
+                            hintText: 'Mật khẩu',
+                            isObscured: state.isPasswordObscured,
+                            suffixIcon: state.isPasswordObscured
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                            onSuffixIconPressed: () {
+                              context
+                                  .read<LoginBloc>()
+                                  .add(TogglePasswordVisibility());
+                            },
                           );
                         },
                       ),

@@ -3,7 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class UserInfoGetApi {
   final Dio dio;
-
   UserInfoGetApi({required this.dio});
   Future<Map<String, dynamic>> getUserInfo() async {
     try {

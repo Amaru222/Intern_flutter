@@ -84,6 +84,7 @@ class AttendanceBloc extends Bloc<AttendanceEvent, AttendanceState> {
       LeaveButtonPressed event, Emitter<AttendanceState> emit) async {
     if (state is AttendanceLoaded) {
       final currentState = state as AttendanceLoaded;
+
       final selectedStudentIds = <String>[];
       for (int i = 0; i < currentState.selectedCheckboxes.length; i++) {
         if (currentState.selectedCheckboxes[i]) {

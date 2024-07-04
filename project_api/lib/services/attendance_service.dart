@@ -40,8 +40,7 @@ class AttendanceService {
       final response = await dio.post(
         'https://api-school-mng-dev.vais.vn/api/teachers/check-in-students',
         data: {
-          'studentIds': studentIds,
-          'checkIn': formattedDateTime,
+          "record": {"studentIds": studentIds, "checkIn": formattedDateTime}
         },
         options: Options(
           headers: {
@@ -66,10 +65,9 @@ class AttendanceService {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
       final response = await dio.post(
-        'https://api-school-mng-dev.vais.vn/api/teachers/check-in-students',
+        'https://api-school-mng-dev.vais.vn/api/teachers/check-out-students',
         data: {
-          'studentIds': studentIds,
-          'checkOut': formattedDateTime,
+          "record": {"studentIds": studentIds, "checkOut": formattedDateTime}
         },
         options: Options(
           headers: {
@@ -78,7 +76,7 @@ class AttendanceService {
         ),
       );
       if (response.statusCode == 200) {
-        print('Check-in successful for studentIds: $studentIds');
+        print('Check-out successful for studentIds: $studentIds');
       } else {
         throw Exception('Failed to check-in for studentIds: $studentIds');
       }

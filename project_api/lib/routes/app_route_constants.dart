@@ -8,7 +8,8 @@ class MyAppRouteName {
   static const String logOutRouteName = "logout";
   static const String profileRouteName = "profile";
   static const String changePasswordRouteName = "changepassword";
-  static const String commentRouteName = "comment";
+  static const String reviewRouteName = "review";
+  static const String frameReviewRouteName = "frame_review";
 }
 
 class MyAppRoutePath {
@@ -20,5 +21,6 @@ class MyAppRoutePath {
   static const String attendanceRoutePath = '/attendance';
   static const String profileRoutePath = '/setting/profile';
   static const String changePasswordRoutePath = '/setting/changepassword';
-  static const String commentRoutePath = '/home/review';
+  static const String reviewRoutePath = '/home/review';
+  static const String frameReviewRoutePath = '/home/review/frameReview';
 }

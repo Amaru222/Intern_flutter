@@ -4,6 +4,7 @@ import 'package:project/features/attendance/ui/attendance_screen.dart';
 import 'package:project/features/auth/changePassword/ui/change_password.dart';
 import 'package:project/features/auth/initialScreen/initial_screen.dart';
 import 'package:project/features/auth/login/ui/login_screen.dart';
+import 'package:project/features/review/frame_review/ui/frame_review_screen.dart';
 import 'package:project/features/review/ui/review_screen.dart';
 import 'package:project/features/home/ui/home_screen.dart';
 import 'package:project/features/message/ui/message_screen.dart';
@@ -30,7 +31,7 @@ class MyAppRoute {
         name: MyAppRouteName.homeRouteName,
         path: MyAppRoutePath.homeRoutePath,
         pageBuilder: (context, state) {
-          return const MaterialPage(child: ReviewScreen());
+          return const MaterialPage(child: HomeScreen());
         }),
     GoRoute(
         name: MyAppRouteName.messageRouteName,
@@ -63,10 +64,17 @@ class MyAppRoute {
           return const MaterialPage(child: ChangePassword());
         }),
     GoRoute(
-        name: MyAppRouteName.commentRouteName,
-        path: MyAppRoutePath.commentRoutePath,
+        name: MyAppRouteName.reviewRouteName,
+        path: MyAppRoutePath.reviewRoutePath,
         pageBuilder: (context, state) {
           return const MaterialPage(child: ReviewScreen());
+        }),
+    GoRoute(
+        name: MyAppRouteName.frameReviewRouteName,
+        path: "${MyAppRoutePath.frameReviewRoutePath}/:studentId",
+        pageBuilder: (context, state) {
+          final studentId = state.pathParameters['studentId']!;
+          return MaterialPage(child: FrameReview(studentId: studentId));
         }),
   ]);
 }

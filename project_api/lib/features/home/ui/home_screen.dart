@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:project/component/bottomnavigationbar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -174,10 +175,14 @@ class _HomeScreenState extends State<HomeScreen> {
         IconButton(
           icon: Image.asset(nameIcon),
           color: Colors.red,
-          onPressed: () {
+          onPressed: () async {
             if (label == 'Nhận xét') {
               context.go('/home/review');
             } else if (label == 'Thời khóa biểu') {
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.remove('token');
+              // ignore: use_build_context_synchronously
+              context.go('/');
             } else if (label == 'Điểm danh') {
             } else if (label == 'Lịch thi') {
             } else if (label == 'Bảng điểm') {}

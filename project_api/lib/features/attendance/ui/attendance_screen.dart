@@ -70,94 +70,87 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       const SizedBox(
                         height: 50,
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(left: 30),
-                            child: Text(
-                              'Điểm danh',
-                              style: TextStyle(
-                                  color: Color(0xff141416),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 18),
-                            child: GestureDetector(
-                              onTap: () => _selectDate(context),
-                              child: Row(
-                                children: [
-                                  const Icon(Icons.calendar_today),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    DateFormat('dd/MM/yyyy')
-                                        .format(_selectedDate),
-                                    style: const TextStyle(
-                                        color: Color(0xff141416),
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 15),
-                          searchField(),
-                          const SizedBox(height: 15),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      const Padding(
+                        padding: EdgeInsets.only(left: 30),
+                        child: Text(
+                          'Điểm danh',
+                          style: TextStyle(
+                              color: Color(0xff141416),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 18),
+                        child: GestureDetector(
+                          onTap: () => _selectDate(context),
+                          child: Row(
                             children: [
-                              const Padding(
-                                padding: EdgeInsets.only(left: 18),
-                                child: Text(
-                                  ' Học sinh',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 16,
-                                  ),
-                                ),
+                              const Icon(Icons.calendar_today),
+                              const SizedBox(width: 8),
+                              Text(
+                                DateFormat('dd/MM/yyyy').format(_selectedDate),
+                                style: const TextStyle(
+                                    color: Color(0xff141416),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 18),
-                                child: GestureDetector(
-                                    onTap: () {
-                                      bool allSelected = state
-                                          .selectedCheckboxes
-                                          .every((element) => element);
-                                      _attendanceBloc.add(SelectAllCheckbox(
-                                          isSelected: !allSelected));
-                                    },
-                                    child: const Text(
-                                      'Chọn tất cả',
-                                      style: TextStyle(
-                                          color: Color(0xff4d5fff),
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                    )),
-                              )
                             ],
                           ),
-                          ListView.builder(
-                              padding: EdgeInsets.zero,
-                              shrinkWrap: true,
-                              itemCount:
-                                  state.listStudent['data']['items'].length,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(top: 10),
-                                  child: listAttendance(
-                                      index: index,
-                                      isChecked:
-                                          state.selectedCheckboxes[index],
-                                      listStudent: state.listStudent),
-                                );
-                              })
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      searchField(),
+                      const SizedBox(height: 15),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(left: 18),
+                            child: Text(
+                              ' Học sinh',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 18),
+                            child: GestureDetector(
+                                onTap: () {
+                                  bool allSelected = state.selectedCheckboxes
+                                      .every((element) => element);
+                                  _attendanceBloc.add(SelectAllCheckbox(
+                                      isSelected: !allSelected));
+                                },
+                                child: const Text(
+                                  'Chọn tất cả',
+                                  style: TextStyle(
+                                      color: Color(0xff4d5fff),
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                )),
+                          )
                         ],
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                            padding: EdgeInsets.zero,
+                            itemCount:
+                                state.listStudent['data']['items'].length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: listAttendance(
+                                    index: index,
+                                    isChecked: state.selectedCheckboxes[index],
+                                    listStudent: state.listStudent),
+                              );
+                            }),
                       ),
                     ],
                   ),
@@ -238,10 +231,13 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       required bool isChecked,
       required Map<String, dynamic> listStudent}) {
     final name = listStudent['data']['items'][index]['name'];
+    String typeAttendance = '';
     // final avatar = listStudent['data']['items'][index]['avatar']['url'];
+    if (listStudent['data']['items'][index]['attendance']!.isNotEmpty) {
+      typeAttendance =
+          listStudent['data']['items'][index]['attendance']['type'];
+    }
 
-    final typeAttendance =
-        listStudent['data']['items'][index]['attendance']['type'];
     String textTypeAttendance;
     final Color colorTypeAttendance;
     if (typeAttendance == 'absence') {

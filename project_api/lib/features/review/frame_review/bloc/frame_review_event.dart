@@ -8,3 +8,10 @@ class LoadDataFrameReview extends FrameReviewEvent {
 
   LoadDataFrameReview(this.studentId);
 }
+
+class PostReviewButtonPressed extends FrameReviewEvent {
+  final String studentId;
+  final String message;
+
+  PostReviewButtonPressed(this.studentId, this.message);
+}

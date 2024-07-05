@@ -48,4 +48,36 @@ class ReviewService {
       throw Exception(e.toString());
     }
   }
+
+  Future<void> postCreateReView(String message, String classId,
+      String schoolLevel, String studentId, String teacherId) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      final response = await dio.post(
+        'https://api-school-mng-dev.vais.vn/api/reviews',
+        data: {
+          "record": {
+            "message": message,
+            "classId": classId,
+            "schoolLevel": schoolLevel,
+            "studentId": studentId,
+            "teacherId": teacherId,
+          }
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        print('post review success');
+      } else {
+        throw Exception('Failed to load list review');
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }

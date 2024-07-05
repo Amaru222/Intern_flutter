@@ -29,7 +29,7 @@ class ReviewBloc extends Bloc<ReviewEvent, ReviewState> {
             .map((review) => review['message'])
             .toList();
         final lastMessage = listMessageByIdStudent.isNotEmpty
-            ? listMessageByIdStudent.last
+            ? listMessageByIdStudent.first
             : '';
         studentMessageFinal[studentId] = lastMessage;
         final listCreatedDateByIdStudent = listReview['data']['items']
@@ -37,7 +37,7 @@ class ReviewBloc extends Bloc<ReviewEvent, ReviewState> {
             .map((review) => review['createdAt'])
             .toList();
         final lastCreatedAt = listCreatedDateByIdStudent.isNotEmpty
-            ? listCreatedDateByIdStudent.last
+            ? listCreatedDateByIdStudent.first
             : '';
         final listUpdatedDateByIdStudent = listReview['data']['items']
             .where((review) => review['studentId'] == studentId)
@@ -46,7 +46,7 @@ class ReviewBloc extends Bloc<ReviewEvent, ReviewState> {
         final lastUpdatedAt = listUpdatedDateByIdStudent.isNotEmpty
             ? listUpdatedDateByIdStudent.last
             : '';
-        
+
         String dateFinalFormat = formatDate(lastUpdatedAt, lastCreatedAt);
         dateFinalWithId[studentId] = dateFinalFormat;
       }

@@ -65,7 +65,9 @@ class _FrameReviewState extends State<FrameReview> {
       ),
       body: BlocProvider(
         create: (context) => FrameReviewBloc(reviewService)
-          ..add(LoadDataFrameReview(widget.studentId)),
+          ..add(LoadDataFrameReview(
+            widget.studentId,
+          )),
         child: BlocBuilder<FrameReviewBloc, FrameReviewState>(
           builder: (context, state) {
             if (state is FrameReviewInitial) {
@@ -73,7 +75,7 @@ class _FrameReviewState extends State<FrameReview> {
                 child: CircularProgressIndicator(),
               );
             } else if (state is FrameReviewLoaded) {
-              if (state.listMessageReviewFilterIdStudent.length > 9) {
+              if (state.listMessageReviewFilterIdStudent.length > 4) {
                 reserve = true;
               }
               return Column(
@@ -122,7 +124,16 @@ class _FrameReviewState extends State<FrameReview> {
                                   border: InputBorder.none),
                             )),
                             IconButton(
-                                onPressed: () {}, icon: const Icon(Icons.send))
+                                onPressed: () {
+                                  context
+                                      .read<FrameReviewBloc>()
+                                      .add(PostReviewButtonPressed(
+                                        widget.studentId,
+                                        messageController.text,
+                                      ));
+                                  messageController.clear();
+                                },
+                                icon: const Icon(Icons.send))
                           ],
                         ),
                       ),
@@ -145,7 +156,7 @@ class _FrameReviewState extends State<FrameReview> {
     );
   }
 
-  Widget listMessage({required index, required List<dynamic> message}) {
+  Widget listMessage({required int index, required List<dynamic> message}) {
     return Container(
       padding: const EdgeInsets.all(10),
       color: Colors.white,
@@ -156,17 +167,20 @@ class _FrameReviewState extends State<FrameReview> {
           const SizedBox(
             height: 10,
           ),
-          Container(
-              decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 221, 221, 221),
-                  borderRadius: BorderRadius.circular(20)),
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Text(
-                  message[index],
-                  style: const TextStyle(fontSize: 20),
-                ),
-              ))
+          GestureDetector(
+            onLongPress: () {},
+            child: Container(
+                decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 221, 221, 221),
+                    borderRadius: BorderRadius.circular(20)),
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Text(
+                    message[index],
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                )),
+          )
         ],
       ),
     );

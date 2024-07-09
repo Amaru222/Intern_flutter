@@ -12,6 +12,23 @@ class LoadDataFrameReview extends FrameReviewEvent {
 class PostReviewButtonPressed extends FrameReviewEvent {
   final String studentId;
   final String message;
+  final List<Map<String, dynamic>> listReview;
+  PostReviewButtonPressed(
+    this.studentId,
+    this.message,
+    this.listReview,
+  );
+}
 
-  PostReviewButtonPressed(this.studentId, this.message);
+class UpdateReviewButtonPressed extends FrameReviewEvent {
+  final String studentId;
+  final String message;
+  final Map<String, dynamic> listReview;
+  UpdateReviewButtonPressed(this.studentId, this.message, this.listReview);
+}
+
+class DeleteReviewButtonPressed extends FrameReviewEvent {
+  final Map<String, dynamic> listReview;
+
+  DeleteReviewButtonPressed(this.listReview);
 }

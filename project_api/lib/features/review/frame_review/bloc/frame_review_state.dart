@@ -5,10 +5,11 @@ sealed class FrameReviewState {}
 
 final class FrameReviewInitial extends FrameReviewState {}
 
+// ignore: must_be_immutable
 class FrameReviewLoaded extends FrameReviewState {
-  final List<dynamic> listMessageReviewFilterIdStudent;
+  List<Map<String, dynamic>> listReview;
 
-  FrameReviewLoaded({required this.listMessageReviewFilterIdStudent});
+  FrameReviewLoaded({required this.listReview});
 }
 
 class FrameReviewError extends FrameReviewState {

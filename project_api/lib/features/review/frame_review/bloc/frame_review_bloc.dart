@@ -13,19 +13,13 @@ class FrameReviewBloc extends Bloc<FrameReviewEvent, FrameReviewState> {
     on<FrameReviewEvent>((event, emit) {});
     on<LoadDataFrameReview>(_loadDataFrameReview);
     on<PostReviewButtonPressed>(_postReviewButtonPressed);
+    on<UpdateReviewButtonPressed>(_updateReviewButtonPressed);
+    on<DeleteReviewButtonPressed>(_deleteReviewButtonPressed);
   }
-
   Future<FutureOr<void>> _loadDataFrameReview(
       LoadDataFrameReview event, Emitter<FrameReviewState> emit) async {
     try {
-      final listMessageReview = await reviewService.getListReView();
-      final listMessageByIdStudent = listMessageReview['data']['items']
-          .where((review) => review['studentId'] == event.studentId)
-          .map((review) => review['message'])
-          .toList();
-      print(listMessageByIdStudent);
-      emit(FrameReviewLoaded(
-          listMessageReviewFilterIdStudent: listMessageByIdStudent));
+      listReview(event.studentId);
     } catch (error) {
       emit(FrameReviewError(error.toString()));
     }
@@ -34,26 +28,71 @@ class FrameReviewBloc extends Bloc<FrameReviewEvent, FrameReviewState> {
   Future<FutureOr<void>> _postReviewButtonPressed(
       PostReviewButtonPressed event, Emitter<FrameReviewState> emit) async {
     if (state is FrameReviewLoaded) {
-      final listMessageReview = await reviewService.getListReView();
-      final listReviewByIdStudent = listMessageReview['data']['items']
-          .where((review) => review['studentId'] == event.studentId)
-          .toList();
-      final classId = listReviewByIdStudent[0]['student']['currentClassId'];
-      final schoolLevel = listReviewByIdStudent[0]['schoolLevel'];
-      final teacherId = listReviewByIdStudent[0]['teacherId'];
       if (event.message != '') {
         await reviewService.postCreateReView(
-            event.message, classId, schoolLevel, event.studentId, teacherId);
-        final updatedListMessageReview = await reviewService.getListReView();
-        final updatedListMessageByIdStudent = updatedListMessageReview['data']
-                ['items']
-            .where((review) => review['studentId'] == event.studentId)
-            .map((review) => review['message'])
-            .toList();
-        final updatedList = updatedListMessageByIdStudent;
-        print(updatedList);
-        emit(FrameReviewLoaded(listMessageReviewFilterIdStudent: updatedList));
+            message: event.message,
+            classId: event.listReview[0]['classId'],
+            schoolLevel: event.listReview[0]['schoolLevel'],
+            studentId: event.studentId,
+            teacherId: event.listReview[0]['teacherId']);
+        listReview(event.studentId);
       }
     }
+  }
+
+  Future<FutureOr<void>> _updateReviewButtonPressed(
+      UpdateReviewButtonPressed event, Emitter<FrameReviewState> emit) async {
+    if (state is FrameReviewLoaded) {
+      if (event.message != '') {
+        await reviewService.patchUpdateReview(
+          messageId: event.listReview['messageId'],
+          message: event.message,
+          classId: event.listReview['classId'],
+          schoolLevel: event.listReview['schoolLevel'],
+          studentId: event.studentId,
+          teacherId: event.listReview['teacherId'],
+        );
+        listReview(event.studentId);
+      }
+    }
+  }
+
+  Future<FutureOr<void>> _deleteReviewButtonPressed(
+      DeleteReviewButtonPressed event, Emitter<FrameReviewState> emit) async {
+    try {
+      if (event.listReview['messageId'] != '') {
+        String messageId = event.listReview['messageId'];
+        await reviewService.deleteReview(messageId: messageId);
+      }
+    } catch (error) {
+      emit(FrameReviewError(error.toString()));
+    }
+  }
+
+  Future<void> listReview(
+    String studentId,
+  ) async {
+    final listReviews = await reviewService.getListReView();
+    final List<dynamic> updatedListMessageByIdStudent = listReviews['data']
+            ['items']
+        .where((review) => review['studentId'] == studentId)
+        .toList();
+    final List<Map<String, dynamic>> listReview =
+        updatedListMessageByIdStudent.map((review) {
+      final classId = review['student']['currentClassId'];
+      final schoolLevel = review['schoolLevel'];
+      final teacherId = review['teacherId'];
+      final message = review['message'];
+      final messageId = review['id'];
+      return {
+        'classId': classId,
+        'schoolLevel': schoolLevel,
+        'teacherId': teacherId,
+        'message': message,
+        'messageId': messageId
+      };
+    }).toList();
+    // ignore: invalid_use_of_visible_for_testing_member
+    emit(FrameReviewLoaded(listReview: listReview));
   }
 }

@@ -14,7 +14,6 @@ class ReviewBloc extends Bloc<ReviewEvent, ReviewState> {
     on<ReviewEvent>((event, emit) {});
     on<LoadDataReview>(_loadDataReview);
   }
-
   Future<FutureOr<void>> _loadDataReview(
       LoadDataReview event, Emitter<ReviewState> emit) async {
     try {

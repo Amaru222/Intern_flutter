@@ -49,8 +49,12 @@ class ReviewService {
     }
   }
 
-  Future<void> postCreateReView(String message, String classId,
-      String schoolLevel, String studentId, String teacherId) async {
+  Future<void> postCreateReView(
+      {required String message,
+      required String classId,
+      required String schoolLevel,
+      required String studentId,
+      required String teacherId}) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
@@ -72,9 +76,70 @@ class ReviewService {
         ),
       );
       if (response.statusCode == 200) {
+        print('create review success');
+      } else {
+        throw Exception('Failed to create review');
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> patchUpdateReview(
+      {required String messageId,
+      required String message,
+      required String classId,
+      required String schoolLevel,
+      required String studentId,
+      required String teacherId}) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      final response = await dio.patch(
+        'https://api-school-mng-dev.vais.vn/api/reviews/$messageId',
+        data: {
+          "record": {
+            "message": message,
+            "classId": classId,
+            "schoolLevel": schoolLevel,
+            "studentId": studentId,
+            "teacherId": teacherId,
+          }
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
         print('post review success');
       } else {
-        throw Exception('Failed to load list review');
+        throw Exception('Failed update review');
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> deleteReview({
+    required String messageId,
+  }) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      final response = await dio.delete(
+        'https://api-school-mng-dev.vais.vn/api/reviews/$messageId',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        print('delete review success');
+      } else {
+        throw Exception('Failed to delete review');
       }
     } catch (e) {
       throw Exception(e.toString());

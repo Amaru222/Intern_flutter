@@ -7,7 +7,7 @@ sealed class ProfileState {
 final class ProfileInitial extends ProfileState {}
 
 class ProfileLoaded extends ProfileState {
-  final Map<String, dynamic> userProfile;
+  User userProfile;
 
   ProfileLoaded(this.userProfile);
 }

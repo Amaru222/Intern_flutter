@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:project/model/user.dart';
 import 'package:project/services/user_info.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 part 'setting_event.dart';
 part 'setting_state.dart';
 
@@ -13,7 +16,7 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
     on<SettingEvent>((event, emit) {});
     _listenToProfileChange();
     on<LoadDataSetting>(_loadDataSetting);
-    on<ChangeLanguage>(_changeLanguage);
+    // on<ChangeLanguage>(_changeLanguage);
   }
   void _listenToProfileChange() {
     LoadDataSetting();
@@ -22,18 +25,18 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
   Future<FutureOr<void>> _loadDataSetting(
       LoadDataSetting event, Emitter<SettingState> emit) async {
     try {
-      final userInfo = await userInfoGetApi.getUserInfo();
-      emit(SettingLoaded(userInfo));
-    } catch (error) {
-      emit(SettingError(error.toString()));
-    }
-  }
-
-  FutureOr<void> _changeLanguage(
-      ChangeLanguage event, Emitter<SettingState> emit) {
-    try {
-      final newLocale = event.newLocale;
-      emit(SettingLoaded({'locale': newLocale}));
+      final prefs = await SharedPreferences.getInstance();
+      final cachedData = prefs.getString('userInfo');
+      if (cachedData != null) {
+        final userInfo = jsonDecode(cachedData);
+        final user = User.fromMap(userInfo);
+        emit(SettingLoaded(user));
+      } else {
+        final userInfo = await userInfoGetApi.getUserInfo();
+        final user = User.fromMap(userInfo);
+        prefs.setString('userInfo', jsonEncode(userInfo));
+        emit(SettingLoaded(user));
+      }
     } catch (error) {
       emit(SettingError(error.toString()));
     }

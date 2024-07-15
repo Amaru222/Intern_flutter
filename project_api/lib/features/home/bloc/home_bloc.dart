@@ -1,27 +1,41 @@
+import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:meta/meta.dart';
-import 'package:project/services/auth_service.dart';
-import 'package:project/apis/refreshToken/token_interceptor.dart';
+import 'dart:convert';
+import 'package:project/model/user.dart';
+import 'package:project/services/user_info.dart';
 
 part 'home_event.dart';
 part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  HomeBloc() : super(HomeInitial()) {
-    on<HomeEvent>((event, emit) {
-      // TODO: implement event handler
-    });
+  final UserInfoGetApi userInfoGetApi;
+  User? cachedUser;
+
+  HomeBloc(this.userInfoGetApi) : super(HomeInitial()) {
+    on<HomeEvent>((event, emit) {});
+    on<LoadDataHome>(_loadDataHome);
   }
-  Dio _createDio() {
-    final dio = Dio();
-    final authService = AuthService(dio: dio);
-    dio.interceptors.add(TokenInterceptor(dio: dio, authService: authService));
-    dio.options = BaseOptions(
-      baseUrl: 'https://api-school-mng-dev.vais.vn',
-      connectTimeout: const Duration(seconds: 5),
-      receiveTimeout: const Duration(seconds: 3),
-    );
-    return dio;
+
+  Future<void> _loadDataHome(
+      LoadDataHome event, Emitter<HomeState> emit) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final cachedData = prefs.getString('userInfo');
+      if (cachedData != null) {
+        final userInfo = jsonDecode(cachedData);
+        final user = User.fromMap(userInfo);
+        emit(HomeLoaded(user));
+      } else {
+        final userInfo = await userInfoGetApi.getUserInfo();
+        final user = User.fromMap(userInfo);
+        prefs.setString(
+            'userInfo', jsonEncode(userInfo)); 
+        emit(HomeLoaded(user));
+      }
+    } catch (error) {
+      emit(HomeError(error.toString()));
+    }
   }
 }

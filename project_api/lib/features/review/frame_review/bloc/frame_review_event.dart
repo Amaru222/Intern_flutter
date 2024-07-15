@@ -28,7 +28,8 @@ class UpdateReviewButtonPressed extends FrameReviewEvent {
 }
 
 class DeleteReviewButtonPressed extends FrameReviewEvent {
+  final String studentId;
   final Map<String, dynamic> listReview;
 
-  DeleteReviewButtonPressed(this.listReview);
+  DeleteReviewButtonPressed( this.studentId, this.listReview);
 }

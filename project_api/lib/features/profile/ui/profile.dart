@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:project/apis/dio_factory.dart';
+import 'package:project/model/user.dart';
 import 'package:project/services/user_info.dart';
 import 'package:project/features/profile/bloc/profile_bloc.dart';
 
@@ -44,17 +45,17 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget builProfileUI(Map<String, dynamic> userProfile) {
-    String nameUser = userProfile['data']['record']['name'] ?? '';
-    String role = userProfile['data']['record']['roleInfo']['role'] ?? '';
-    String nameRole = '';
-    if (role == 'teacher') {
-      nameRole = userProfile['data']['record']['teacher']['name'] ?? '';
-    } else {
-      nameRole = userProfile['data']['record']['parents']['name'] ?? '';
-    }
-    String classInfo =
-        userProfile['data']['record']['teacher']['class']['name'] ?? '';
+  Widget builProfileUI(User userProfile) {
+    // String nameUser = userProfile['data']['record']['name'] ?? '';
+    // String role = userProfile['data']['record']['roleInfo']['role'] ?? '';
+    // String nameRole = '';
+    // if (role == 'teacher') {
+    //   nameRole = userProfile['data']['record']['teacher']['name'] ?? '';
+    // } else {
+    //   nameRole = userProfile['data']['record']['parents']['name'] ?? '';
+    // }
+    // String classInfo =
+    //     userProfile['data']['record']['teacher']['class']['name'] ?? '';
     List<Map<String, dynamic>> profileItems = [
       {
         'field': 'Ngày sinh',
@@ -63,17 +64,17 @@ class _ProfileState extends State<Profile> {
       },
       {
         'field': 'Email',
-        'data': userProfile['data']['record']['email'] ?? '',
+        'data': userProfile.email,
         'onTap': () {},
       },
       {
         'field': 'Số điện thoại',
-        'data': userProfile['data']['record']['phone'] ?? '',
+        'data': userProfile.phone,
         'onTap': () {},
       },
       {
         'field': 'Địa chỉ',
-        'data': userProfile['data']['record']['address'] ?? '',
+        'data': '',
         'onTap': () {},
       },
     ];
@@ -134,14 +135,14 @@ class _ProfileState extends State<Profile> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        nameUser,
+                        userProfile.name,
                         style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                             color: Color(0xff181818)),
                       ),
                       Text(
-                        '$nameRole : $classInfo',
+                        '${userProfile.nameRole} : ${userProfile.classInfo}',
                         style: const TextStyle(
                             color: Color(0xff181818), fontSize: 13),
                       ),

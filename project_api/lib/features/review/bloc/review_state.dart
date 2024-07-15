@@ -6,13 +6,11 @@ sealed class ReviewState {}
 final class ReviewInitial extends ReviewState {}
 
 class ReviewLoaded extends ReviewState {
-  final Map<String, dynamic> listReview;
   final Map<String, dynamic> listStudent;
   final Map<String, String> studentMessageFinal;
   final Map<String, String> dateFinalWithId;
   ReviewLoaded(
       {required this.listStudent,
-      required this.listReview,
       required this.studentMessageFinal,
       required this.dateFinalWithId});
 }

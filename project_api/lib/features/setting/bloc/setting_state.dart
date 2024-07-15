@@ -8,7 +8,7 @@ sealed class SettingState {
 final class SettingInitial extends SettingState {}
 
 class SettingLoaded extends SettingState {
-  final Map<String, dynamic> userProfile;
+  final User userProfile;
 
   const SettingLoaded(
     this.userProfile,

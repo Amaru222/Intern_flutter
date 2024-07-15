@@ -15,13 +15,27 @@ class ReviewScreen extends StatefulWidget {
 }
 
 class _ReviewScreenState extends State<ReviewScreen> {
+  late final ReviewBloc _reviewBloc;
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     final dio = createDio();
     final reviewService = ReviewService(dio: dio);
+    _reviewBloc = ReviewBloc(reviewService);
+    _reviewBloc.add(LoadDataReview());
+  }
+
+  @override
+  void dispose() {
+    _reviewBloc.close();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: BlocProvider(
-        create: (context) => ReviewBloc(reviewService)..add(LoadDataReview()),
+        create: (context) => _reviewBloc,
         child: BlocBuilder<ReviewBloc, ReviewState>(builder: (context, state) {
           if (state is ReviewInitial) {
             return const Center(
@@ -81,7 +95,6 @@ class _ReviewScreenState extends State<ReviewScreen> {
                             padding: const EdgeInsets.only(top: 10),
                             child: listStudentComment(
                                 index: index,
-                                listReview: state.listReview,
                                 listStudent: state.listStudent,
                                 studentMessageFinal: state.studentMessageFinal,
                                 dateMessageFinal: state.dateFinalWithId),
@@ -107,7 +120,6 @@ class _ReviewScreenState extends State<ReviewScreen> {
 
   Widget listStudentComment(
       {required int index,
-      required Map<String, dynamic> listReview,
       required Map<String, dynamic> listStudent,
       required Map<String, String> studentMessageFinal,
       required Map<String, dynamic> dateMessageFinal}) {

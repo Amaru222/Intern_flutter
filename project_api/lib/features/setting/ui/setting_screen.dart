@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:project/apis/dio_factory.dart';
+import 'package:project/model/user.dart';
 import 'package:project/services/user_info.dart';
 import 'package:project/component/bottomnavigationbar.dart';
 import 'package:project/features/setting/bloc/setting_bloc.dart';
@@ -45,17 +46,18 @@ class _SettingScreenState extends State<SettingScreen> {
     );
   }
 
-  Widget buildSettingUI(Map<String, dynamic> userProfile) {
-    String nameUser = userProfile['data']['record']['name'] ?? '';
-    String role = userProfile['data']['record']['roleInfo']['role'] ?? '';
-    String nameRole = '';
-    if (role == 'teacher') {
-      nameRole = userProfile['data']['record']['teacher']['name'] ?? '';
-    } else {
-      nameRole = userProfile['data']['record']['parents']['name'] ?? '';
-    }
-    String classInfo =
-        userProfile['data']['record']['teacher']['class']['name'] ?? '';
+  Widget buildSettingUI(User userProfile) {
+    // String nameUser = userProfile['record']['name'] ?? '';
+    // String role = userProfile['data']['record']['roleInfo']['role'] ?? '';
+    // String nameRole = '';
+    // if (role == 'teacher') {
+    //   nameRole = userProfile['data']['record']['teacher']['name'] ?? '';
+    // } else {
+    //   nameRole = userProfile['data']['record']['parents']['name'] ?? '';
+    // }
+    // String classInfo =
+    //     userProfile['data']['record']['teacher']['class']['name'] ?? '';
+
     final List<Map<String, dynamic>> settingsItems = [
       {
         'icon': 'assets/images/icon_setting_screen/profile.png',
@@ -143,14 +145,14 @@ class _SettingScreenState extends State<SettingScreen> {
                   height: 50,
                 ),
                 Text(
-                  nameUser,
+                  userProfile.name,
                   style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Color(0xff181818),
                       fontSize: 16),
                 ),
                 Text(
-                  '$nameRole : $classInfo',
+                  '${userProfile.nameRole} : ${userProfile.classInfo}',
                   style:
                       const TextStyle(fontSize: 13, color: Color(0xff181818)),
                 ),

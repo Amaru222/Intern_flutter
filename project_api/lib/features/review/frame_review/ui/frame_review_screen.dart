@@ -270,6 +270,7 @@ class _FrameReviewState extends State<FrameReview> {
                       widget.studentId,
                       listReview,
                     ));
+                Navigator.pop(context);
               },
             ),
           ],

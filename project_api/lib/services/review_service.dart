@@ -54,7 +54,7 @@ class ReviewService {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
       final response = await dio.get(
-        'https://api-school-mng-dev.vais.vn/api/reviews?filter[studentId]=$studentId&limit=30&page=1&sort[createdAt]=-1',
+        'https://api-school-mng-dev.vais.vn/api/reviews?filter[studentId]=$studentId&limit=10&page=1&sort[createdAt]=-1',
         options: Options(
           headers: {
             'Authorization': 'Bearer $token',

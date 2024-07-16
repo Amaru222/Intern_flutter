@@ -1,10 +1,12 @@
+// ignore_for_file: invalid_use_of_visible_for_testing_member
+
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:project/services/review_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 part 'frame_review_event.dart';
 part 'frame_review_state.dart';
 
@@ -20,7 +22,7 @@ class FrameReviewBloc extends Bloc<FrameReviewEvent, FrameReviewState> {
   Future<FutureOr<void>> _loadDataFrameReview(
       LoadDataFrameReview event, Emitter<FrameReviewState> emit) async {
     try {
-      listReview(event.studentId);
+      loadDataListReview(event.studentId);
     } catch (error) {
       emit(FrameReviewError(error.toString()));
     }
@@ -36,7 +38,8 @@ class FrameReviewBloc extends Bloc<FrameReviewEvent, FrameReviewState> {
             schoolLevel: event.listReview[0]['schoolLevel'],
             studentId: event.studentId,
             teacherId: event.listReview[0]['teacherId']);
-        listReview(event.studentId);
+        // listReview(event.studentId);
+        updateDataListReview(event.studentId);
       }
     }
   }
@@ -53,7 +56,8 @@ class FrameReviewBloc extends Bloc<FrameReviewEvent, FrameReviewState> {
           studentId: event.studentId,
           teacherId: event.listReview['teacherId'],
         );
-        listReview(event.studentId);
+        // listReview(event.studentId);
+        updateDataListReview(event.studentId);
       }
     }
   }
@@ -65,18 +69,61 @@ class FrameReviewBloc extends Bloc<FrameReviewEvent, FrameReviewState> {
         String messageId = event.listReview['messageId'];
         await reviewService.deleteReview(messageId: messageId);
       }
-      listReview(event.studentId);
+      // listReview(event.studentId);
+      updateDataListReview(event.studentId);
     } catch (error) {
       emit(FrameReviewError(error.toString()));
     }
   }
 
-  Future<void> listReview(
+  Future<void> loadDataListReview(
     String studentId,
   ) async {
-    final listReviews = await reviewService.getListReViewAll(studentId);
+    final prefs = await SharedPreferences.getInstance();
+    final cachedData = prefs.getString('reviewData');
+    if (cachedData != null) {
+      final reviewData = jsonDecode(cachedData);
+      for (var listReviews in reviewData['listReview']) {
+        if (listReviews['data']['filter']['studentId'] == studentId) {
+          emitFrameReview(reviewData['listStudent'], listReviews, studentId);
+        }
+      }
+    } else {
+      final listReviews = await reviewService.getListReViewAll(studentId);
+      final listStudent = await reviewService.getListStudent();
+      emitFrameReview(listStudent, listReviews, studentId);
+    }
+  }
 
+  Future<void> updateDataListReview(String studentId) async {
+    final listReviews = await reviewService.getListReViewAll(studentId);
     final listStudent = await reviewService.getListStudent();
+    final prefs = await SharedPreferences.getInstance();
+    final cachedData = prefs.getString('reviewData');
+
+    if (cachedData != null) {
+      final reviewData = jsonDecode(cachedData);
+
+      for (var i = 0; i < reviewData['listReview'].length; i++) {
+        if (reviewData['listReview'][i]['data']['filter']['studentId'] ==
+            studentId) {
+          reviewData['listReview'][i] = listReviews;
+          break;
+        }
+      }
+      final reviewDatas = {
+        'listStudent': listStudent,
+        'listReview': reviewData['listReview'],
+      };
+      prefs.setString('reviewData', jsonEncode(reviewDatas));
+      emitFrameReview(listStudent, listReviews, studentId);
+    } else {
+      print("No cached data found");
+    }
+  }
+
+  void emitFrameReview(Map<String, dynamic> listStudent,
+      Map<String, dynamic> listReviews, String studentId) {
     final student = listStudent['data']['items'].firstWhere(
         (student) => student['id'] == studentId,
         orElse: () => null);
@@ -87,7 +134,6 @@ class FrameReviewBloc extends Bloc<FrameReviewEvent, FrameReviewState> {
     final String nameStudent = student['name'];
     final List<dynamic> updatedListMessageByIdStudent =
         listReviews['data']['items'].toList();
-
     final List<Map<String, dynamic>> listReview = updatedListMessageByIdStudent
         .where((review) => review['message'] != null)
         .map((review) {
@@ -113,8 +159,6 @@ class FrameReviewBloc extends Bloc<FrameReviewEvent, FrameReviewState> {
     if (listReview.isEmpty) {
       listReview.add({'nameStudent': nameStudent});
     }
-
-    // ignore: invalid_use_of_visible_for_testing_member
     emit(FrameReviewLoaded(listReview: listReview));
   }
 

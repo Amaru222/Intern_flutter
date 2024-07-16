@@ -213,6 +213,7 @@ class _HomeScreenState extends State<HomeScreen> {
             } else if (label == 'Thời khóa biểu') {
               final prefs = await SharedPreferences.getInstance();
               await prefs.remove('token');
+              await prefs.remove('reviewData');
               // ignore: use_build_context_synchronously
               context.go('/');
             } else if (label == 'Điểm danh') {

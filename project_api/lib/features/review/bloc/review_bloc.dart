@@ -22,49 +22,48 @@ class ReviewBloc extends Bloc<ReviewEvent, ReviewState> {
       final cachedData = prefs.getString('reviewData');
       if (cachedData != null) {
         final reviewData = jsonDecode(cachedData);
-        emit(ReviewLoaded(
-          listStudent: reviewData['listStudent'],
-          studentMessageFinal:
-              Map<String, String>.from(reviewData['studentMessageFinal']),
-          dateFinalWithId:
-              Map<String, String>.from(reviewData['dateFinalWithId']),
-        ));
+        final studentMessageFinal = <String, String>{};
+        final dateFinalWithId = <String, String>{};
+        dynamic studentId = {};
+        if (reviewData['listReview'] != null) {
+          for (var student in reviewData['listStudent']['data']['items']) {
+            studentId = student['id'];
+            for (var listReview in reviewData['listReview']) {
+              if (listReview['data']['filter']['studentId'] == studentId) {
+                final formattedData =
+                    formatMessageFinalAndDate(studentId, listReview);
+                studentMessageFinal
+                    .addAll(formattedData['studentMessageFinal'] ?? {});
+                dateFinalWithId.addAll(formattedData['dateFinalWithId'] ?? {});
+              }
+            }
+          }
+        }
+        emit(
+          ReviewLoaded(
+              listStudent: reviewData['listStudent'],
+              studentMessageFinal: studentMessageFinal,
+              dateFinalWithId: dateFinalWithId),
+        );
       } else {
         final listStudent = await reviewService.getListStudent();
+        List<Map<String, dynamic>> accumulatedListReview = [];
         final studentMessageFinal = <String, String>{};
         final dateFinalWithId = <String, String>{};
         for (var student in listStudent['data']['items']) {
-          final studentId = student['id'];
-          final listReview = await reviewService.getListReViewLast(studentId);
-          final listMessageByIdStudent = listReview['data']['items']
-              .where((review) => review['studentId'] == studentId)
-              .map((review) => review['message'])
-              .toList();
-          final lastMessage = listMessageByIdStudent.isNotEmpty
-              ? listMessageByIdStudent.first
-              : '';
-          studentMessageFinal[studentId] = lastMessage;
-          final listCreatedDateByIdStudent = listReview['data']['items']
-              .where((review) => review['studentId'] == studentId)
-              .map((review) => review['createdAt'])
-              .toList();
-          final lastCreatedAt = listCreatedDateByIdStudent.isNotEmpty
-              ? listCreatedDateByIdStudent.first
-              : '';
-          final listUpdatedDateByIdStudent = listReview['data']['items']
-              .where((review) => review['studentId'] == studentId)
-              .map((review) => review['updatedAt'])
-              .toList();
-          final lastUpdatedAt = listUpdatedDateByIdStudent.isNotEmpty
-              ? listUpdatedDateByIdStudent.last
-              : '';
-          String dateFinalFormat = formatDate(lastUpdatedAt, lastCreatedAt);
-          dateFinalWithId[studentId] = dateFinalFormat;
+          dynamic studentId = student['id'];
+          final listReview = await reviewService.getListReViewAll(studentId);
+          accumulatedListReview.add(listReview);
+          final formattedData =
+              formatMessageFinalAndDate(studentId, listReview);
+          studentMessageFinal
+              .addAll(formattedData['studentMessageFinal'] ?? {});
+          dateFinalWithId.addAll(formattedData['dateFinalWithId'] ?? {});
         }
+        print(accumulatedListReview);
         final reviewData = {
           'listStudent': listStudent,
-          'studentMessageFinal': studentMessageFinal,
-          'dateFinalWithId': dateFinalWithId,
+          'listReview': accumulatedListReview,
         };
         prefs.setString('reviewData', jsonEncode(reviewData));
         emit(ReviewLoaded(
@@ -76,6 +75,41 @@ class ReviewBloc extends Bloc<ReviewEvent, ReviewState> {
     } catch (error) {
       emit(ReviewError(error.toString()));
     }
+  }
+
+  Map<String, Map<String, String>> formatMessageFinalAndDate(
+      dynamic studentId, Map<String, dynamic> listReview) {
+    final studentMessageFinal = <String, String>{};
+    final dateFinalWithId = <String, String>{};
+    final listMessageByIdStudent = listReview['data']['items']
+        .where((review) => review['studentId'] == studentId)
+        .map((review) => review['message'])
+        .toList();
+    final lastMessage =
+        listMessageByIdStudent.isNotEmpty ? listMessageByIdStudent.first : '';
+    studentMessageFinal[studentId] = lastMessage;
+    final listCreatedDateByIdStudent = listReview['data']['items']
+        .where((review) => review['studentId'] == studentId)
+        .map((review) => review['createdAt'])
+        .toList();
+    final lastCreatedAt = listCreatedDateByIdStudent.isNotEmpty
+        ? listCreatedDateByIdStudent.first
+        : '';
+    final listUpdatedDateByIdStudent = listReview['data']['items']
+        .where((review) => review['studentId'] == studentId)
+        .map((review) => review['updatedAt'])
+        .toList();
+    final lastUpdatedAt = listUpdatedDateByIdStudent.isNotEmpty
+        ? listUpdatedDateByIdStudent.first
+        : '';
+
+    String dateFinalFormat = formatDate(lastUpdatedAt, lastCreatedAt);
+    dateFinalWithId[studentId] = dateFinalFormat;
+
+    return {
+      'studentMessageFinal': studentMessageFinal,
+      'dateFinalWithId': dateFinalWithId,
+    };
   }
 
   String formatDate(String lastUpdatedAt, String lastCreatedAt) {

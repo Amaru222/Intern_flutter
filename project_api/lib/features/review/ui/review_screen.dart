@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:project/apis/dio_factory.dart';
 import 'package:project/features/review/bloc/review_bloc.dart';
+import 'package:project/generated/l10n.dart';
 import 'package:project/services/review_service.dart';
 
 class ReviewScreen extends StatefulWidget {
@@ -69,11 +70,11 @@ class _ReviewScreenState extends State<ReviewScreen> {
                               size: 26,
                             )),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.only(left: 20),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20),
                         child: Text(
-                          'Nhận xét',
-                          style: TextStyle(
+                          S.of(context).review,
+                          style: const TextStyle(
                               fontSize: 22, fontWeight: FontWeight.bold),
                         ),
                       ),

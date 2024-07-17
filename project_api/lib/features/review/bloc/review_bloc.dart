@@ -60,7 +60,6 @@ class ReviewBloc extends Bloc<ReviewEvent, ReviewState> {
               .addAll(formattedData['studentMessageFinal'] ?? {});
           dateFinalWithId.addAll(formattedData['dateFinalWithId'] ?? {});
         }
-        print(accumulatedListReview);
         final reviewData = {
           'listStudent': listStudent,
           'listReview': accumulatedListReview,
@@ -73,6 +72,7 @@ class ReviewBloc extends Bloc<ReviewEvent, ReviewState> {
         ));
       }
     } catch (error) {
+      print(error.toString());
       emit(ReviewError(error.toString()));
     }
   }

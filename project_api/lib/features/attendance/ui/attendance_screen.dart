@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:project/apis/dio_factory.dart';
 import 'package:project/component/bottomnavigationbar.dart';
 import 'package:project/features/attendance/bloc/attendance_bloc.dart';
-import 'package:project/features/attendance/component/search_field.dart';
+import 'package:project/generated/l10n.dart';
 import 'package:project/services/attendance_service.dart';
 
 class AttendanceScreen extends StatefulWidget {
@@ -70,11 +70,11 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       const SizedBox(
                         height: 50,
                       ),
-                      const Padding(
-                        padding: EdgeInsets.only(left: 30),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 30),
                         child: Text(
-                          'Điểm danh',
-                          style: TextStyle(
+                          S.of(context).attendance,
+                          style: const TextStyle(
                               color: Color(0xff141416),
                               fontWeight: FontWeight.bold,
                               fontSize: 20),
@@ -108,11 +108,11 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Padding(
-                            padding: EdgeInsets.only(left: 18),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 18),
                             child: Text(
-                              ' Học sinh',
-                              style: TextStyle(
+                              S.of(context).student,
+                              style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 16,
                               ),
@@ -127,9 +127,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                   _attendanceBloc.add(SelectAllCheckbox(
                                       isSelected: !allSelected));
                                 },
-                                child: const Text(
-                                  'Chọn tất cả',
-                                  style: TextStyle(
+                                child: Text(
+                                  S.of(context).select_all,
+                                  style: const TextStyle(
                                       color: Color(0xff4d5fff),
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold),
@@ -179,8 +179,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                     BlocProvider.of<AttendanceBloc>(context)
                                         .add(AttendButtonPressed());
                                   },
-                                  child: const Text('Vào lớp',
-                                      style: TextStyle(
+                                  child: Text(S.of(context).check_in,
+                                      style: const TextStyle(
                                           color: Colors.white, fontSize: 14))),
                             ),
                             const SizedBox(
@@ -201,9 +201,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                     BlocProvider.of<AttendanceBloc>(context)
                                         .add(LeaveButtonPressed());
                                   },
-                                  child: const Text(
-                                    'Ra Ngoài',
-                                    style: TextStyle(
+                                  child: Text(
+                                    S.of(context).check_out,
+                                    style: const TextStyle(
                                         color: Colors.white, fontSize: 14),
                                   )),
                             )
@@ -233,22 +233,22 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     final name = listStudent['data']['items'][index]['name'];
     String typeAttendance = '';
     // final avatar = listStudent['data']['items'][index]['avatar']['url'];
-    if (listStudent['data']['items'][index]['attendance']!.isNotEmpty) {
+    if (listStudent['data']['items'][index]['attendance'] != null &&
+        listStudent['data']['items'][index]['attendance'].isNotEmpty) {
       typeAttendance =
           listStudent['data']['items'][index]['attendance']['type'];
     }
-
     String textTypeAttendance;
     final Color colorTypeAttendance;
-    if (typeAttendance == 'absence') {
-      textTypeAttendance = 'Vắng mặt';
-      colorTypeAttendance = const Color.fromARGB(255, 227, 48, 48);
+    if (typeAttendance == 'check-out') {
+      textTypeAttendance = S.of(context).check_out_successful;
+      colorTypeAttendance = const Color(0xfff79525);
     } else if (typeAttendance == 'check-in') {
-      textTypeAttendance = 'Đã vào lớp';
+      textTypeAttendance = S.of(context).check_in_successful;
       colorTypeAttendance = const Color(0xff59a975);
     } else {
-      textTypeAttendance = 'Chưa vào lớp';
-      colorTypeAttendance = const Color(0xfff79525);
+      textTypeAttendance = S.of(context).absence;
+      colorTypeAttendance = const Color.fromARGB(255, 227, 48, 48);
     }
     return Container(
         margin: const EdgeInsets.only(right: 16, left: 16),
@@ -309,5 +309,34 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             ),
           ],
         ));
+  }
+
+  Widget searchField() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF4F5F7),
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.search,
+            color: Colors.grey,
+          ),
+          const SizedBox(width: 8.0),
+          Expanded(
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: S.of(context).search_name,
+                hintStyle: const TextStyle(color: Colors.grey),
+                border: InputBorder.none,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

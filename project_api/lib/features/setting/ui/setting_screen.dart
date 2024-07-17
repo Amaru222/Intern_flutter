@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:project/apis/dio_factory.dart';
+import 'package:project/generated/l10n.dart';
+import 'package:project/language/bloc/language_bloc.dart';
 import 'package:project/model/user.dart';
 import 'package:project/services/user_info.dart';
 import 'package:project/component/bottomnavigationbar.dart';
@@ -47,21 +49,10 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 
   Widget buildSettingUI(User userProfile) {
-    // String nameUser = userProfile['record']['name'] ?? '';
-    // String role = userProfile['data']['record']['roleInfo']['role'] ?? '';
-    // String nameRole = '';
-    // if (role == 'teacher') {
-    //   nameRole = userProfile['data']['record']['teacher']['name'] ?? '';
-    // } else {
-    //   nameRole = userProfile['data']['record']['parents']['name'] ?? '';
-    // }
-    // String classInfo =
-    //     userProfile['data']['record']['teacher']['class']['name'] ?? '';
-
     final List<Map<String, dynamic>> settingsItems = [
       {
         'icon': 'assets/images/icon_setting_screen/profile.png',
-        'title': 'Thông tin chi tiết',
+        'title': S.of(context).profile,
         'trailing': Icons.arrow_forward_ios,
         'onTap': () {
           context.go('/setting/profile');
@@ -69,7 +60,7 @@ class _SettingScreenState extends State<SettingScreen> {
       },
       {
         'icon': 'assets/images/icon_setting_screen/change_password.png',
-        'title': 'Thay đổi mật khẩu',
+        'title': S.of(context).changePassword,
         'trailing': Icons.arrow_forward_ios,
         'onTap': () {
           context.go('/setting/changepassword');
@@ -77,25 +68,37 @@ class _SettingScreenState extends State<SettingScreen> {
       },
       {
         'icon': 'assets/images/icon_setting_screen/language.png',
-        'title': 'Ngôn ngữ',
-        'trailing': const Text('Vietnamese', style: TextStyle(fontSize: 14)),
-        'onTap': () {},
+        'title': S.of(context).language,
+        'trailing': Text(
+            Localizations.localeOf(context).languageCode == 'vi'
+                ? S.of(context).vietnamese
+                : S.of(context).english,
+            style: const TextStyle(fontSize: 14)),
+        'onTap': () {
+          final languageBloc = context.read<LanguageBloc>();
+          final currentLocale = Localizations.localeOf(context);
+          if (currentLocale.languageCode == 'en') {
+            languageBloc.add(ToVietnamese());
+          } else {
+            languageBloc.add(ToEnglish());
+          }
+        },
       },
       {
         'icon': 'assets/images/icon_setting_screen/notification.png',
-        'title': 'Cài đặt thông báo',
+        'title': S.of(context).notificationSettings,
         'trailing': Icons.arrow_forward_ios,
         'onTap': () {},
       },
       {
         'icon': 'assets/images/icon_setting_screen/guide.png',
-        'title': 'Hướng dẫn sử dụng',
+        'title': S.of(context).userGuide,
         'trailing': Icons.arrow_forward_ios,
         'onTap': () {},
       },
       {
         'icon': 'assets/images/icon_setting_screen/version.png',
-        'title': 'Phiên bản',
+        'title': S.of(context).version,
         'trailing': const Text(
           '2.2.2',
           style: TextStyle(fontSize: 14),
@@ -104,7 +107,7 @@ class _SettingScreenState extends State<SettingScreen> {
       },
       {
         'icon': 'assets/images/icon_setting_screen/logout.png',
-        'title': 'Đăng xuất',
+        'title': S.of(context).logout,
         'trailing': Icons.arrow_forward_ios,
         'onTap': () async {
           final prefs = await SharedPreferences.getInstance();

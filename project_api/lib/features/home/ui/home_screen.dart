@@ -6,6 +6,7 @@ import 'package:project/apis/dio_factory.dart';
 
 import 'package:project/component/bottomnavigationbar.dart';
 import 'package:project/features/home/bloc/home_bloc.dart';
+import 'package:project/generated/l10n.dart';
 import 'package:project/model/user.dart';
 import 'package:project/services/user_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -131,38 +132,38 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     _buildIconButton(
                         'assets/images/icon_home/icon_calendar.png',
-                        'Thời khóa biểu'),
+                        S.of(context).timetable),
                     _buildIconButton(
                         'assets/images/icon_home/icon_attendance.png',
-                        'Điểm danh'),
+                        S.of(context).attendance),
                     _buildIconButton(
                         'assets/images/icon_home/icon_test_schedule.png',
-                        'Lịch thi'),
+                        S.of(context).exam_schedule),
                     _buildIconButton(
                         'assets/images/icon_home/icon_transcript.png',
-                        'Bảng điểm'),
-                    _buildIconButton(
-                        'assets/images/icon_home/icon_comment.png', 'Nhận xét'),
-                    _buildIconButton(
-                        'assets/images/icon_home/icon_message.png', 'Tin nhắn'),
-                    _buildIconButton(
-                        'assets/images/icon_home/icon_menu.png', 'Thực đơn'),
+                        S.of(context).transcript),
+                    _buildIconButton('assets/images/icon_home/icon_comment.png',
+                        S.of(context).review),
+                    _buildIconButton('assets/images/icon_home/icon_message.png',
+                        S.of(context).message),
+                    _buildIconButton('assets/images/icon_home/icon_menu.png',
+                        S.of(context).menu),
                   ],
                 ),
-                const Row(
+                Row(
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       width: 20,
                     ),
                     Text(
-                      'Thông báo',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+                      S.of(context).notification,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 22),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 8,
                     ),
-                    Image(
+                    const Image(
                         image:
                             AssetImage('assets/images/icon_home/firework.png'))
                   ],
@@ -208,17 +209,20 @@ class _HomeScreenState extends State<HomeScreen> {
           icon: Image.asset(nameIcon),
           color: Colors.red,
           onPressed: () async {
-            if (label == 'Nhận xét') {
+            if (label == 'Nhận xét' || label == 'Review') {
               context.go('/home/review');
-            } else if (label == 'Thời khóa biểu') {
+            } else if (label == 'Thời khóa biểu' || label == 'Timetable') {
               final prefs = await SharedPreferences.getInstance();
               await prefs.remove('token');
               await prefs.remove('reviewData');
+              await prefs.remove('attendanceData');
               // ignore: use_build_context_synchronously
               context.go('/');
-            } else if (label == 'Điểm danh') {
-            } else if (label == 'Lịch thi') {
-            } else if (label == 'Bảng điểm') {}
+            } else if (label == 'Điểm danh' || label == 'Attendance') {
+            } else if (label == 'Lịch thi' || label == 'Exam Schedule') {
+            } else if (label == 'Bảng điểm' || label == 'Transcript') {
+            } else if (label == "Tin nhắn" || label == 'Message') {
+            } else if (label == "Thực đơn" || label == 'Menu') {}
           },
         ),
         Text(

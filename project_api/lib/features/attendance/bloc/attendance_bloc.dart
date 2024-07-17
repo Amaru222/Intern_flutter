@@ -1,11 +1,13 @@
+// ignore_for_file: invalid_use_of_visible_for_testing_member
+
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
-
 import 'package:project/services/attendance_service.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 part 'attendance_event.dart';
 part 'attendance_state.dart';
 
@@ -14,7 +16,6 @@ class AttendanceBloc extends Bloc<AttendanceEvent, AttendanceState> {
   String _selectedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
   AttendanceBloc(this.attendanceService) : super(AttendanceInitial()) {
     on<AttendanceEvent>((event, emit) {});
-    _listenToAttendanceChange();
     on<LoadStudent>(_loadStudent);
     on<ToggleCheckbox>(_toggleCheckbox);
     on<SelectAllCheckbox>(_selectAllCheckbox);
@@ -22,20 +23,20 @@ class AttendanceBloc extends Bloc<AttendanceEvent, AttendanceState> {
     on<LeaveButtonPressed>(_leaveButtonPressed);
     on<ChangeDate>(_changeDate);
   }
-  void _listenToAttendanceChange() {
-    add(LoadStudent());
-  }
-
   Future<FutureOr<void>> _loadStudent(
       LoadStudent event, Emitter<AttendanceState> emit) async {
     try {
-      // final listStudent = await attendanceService.getListStudentAttendance();
-      final listStudent =
-          await attendanceService.getListStudentAttendanceDate(_selectedDate);
-      final List<bool> selectedCheckboxes =
-          List.filled(listStudent['data']['items'].length, false);
-      emit(AttendanceLoaded(listStudent,
-          selectedCheckboxes: selectedCheckboxes));
+      final prefs = await SharedPreferences.getInstance();
+      final cachedData = prefs.getString('attendanceData');
+      if (cachedData != null) {
+        final attendanceData = jsonDecode(cachedData);
+        final List<bool> selectedCheckboxes = List.filled(
+            attendanceData['listStudent']['data']['items'].length, false);
+        emit(AttendanceLoaded(attendanceData['listStudent'],
+            selectedCheckboxes: selectedCheckboxes));
+      } else {
+        emitLoadAttendance();
+      }
     } catch (error) {
       emit(AttendanceError(error.toString()));
     }
@@ -75,8 +76,8 @@ class AttendanceBloc extends Bloc<AttendanceEvent, AttendanceState> {
               .add(currentState.listStudent['data']['items'][i]['id']);
         }
       }
-      // print(selectedStudentIds);
       await attendanceService.postCheckIn(selectedStudentIds);
+      emitLoadAttendance();
     }
   }
 
@@ -92,14 +93,31 @@ class AttendanceBloc extends Bloc<AttendanceEvent, AttendanceState> {
               .add(currentState.listStudent['data']['items'][i]['id']);
         }
       }
-      // print(selectedStudentIds);
       await attendanceService.postCheckOut(selectedStudentIds);
+      emitLoadAttendance();
     }
+  }
+
+  Future<void> emitLoadAttendance() async {
+    final prefs = await SharedPreferences.getInstance();
+    final listStudent =
+        await attendanceService.getListStudentAttendanceDate(_selectedDate);
+    final List<bool> selectedCheckboxes =
+        List.filled(listStudent['data']['items'].length, false);
+    final attendanceData = {
+      'listStudent': listStudent,
+    };
+    prefs.setString('attendanceData', jsonEncode(attendanceData));
+    emit(AttendanceLoaded(listStudent, selectedCheckboxes: selectedCheckboxes));
   }
 
   Future<FutureOr<void>> _changeDate(
       ChangeDate event, Emitter<AttendanceState> emit) async {
     _selectedDate = event.date;
-    add(LoadStudent());
+    final listStudent =
+        await attendanceService.getListStudentAttendanceDate(_selectedDate);
+    final List<bool> selectedCheckboxes =
+        List.filled(listStudent['data']['items'].length, false);
+    emit(AttendanceLoaded(listStudent, selectedCheckboxes: selectedCheckboxes));
   }
 }

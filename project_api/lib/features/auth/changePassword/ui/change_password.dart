@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:project/features/auth/changePassword/bloc/change_password_bloc.dart';
 import 'package:project/features/auth/component/text_input_field.dart';
 
@@ -38,18 +39,30 @@ class _ChangePasswordState extends State<ChangePassword> {
         create: (context) => _changePasswordBloc,
         child: Scaffold(
           resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: Colors.white,
+            titleSpacing: 0,
+            leading: IconButton(
+                onPressed: () {
+                  context.go('/setting');
+                },
+                icon: const Icon(Icons.arrow_back)),
+            title: const Text(
+              'Đổi mật khẩu',
+              style: TextStyle(
+                  color: Color(0xff141416),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 22),
+            ),
+          ),
           body: Center(
               child: Container(
             decoration: const BoxDecoration(color: Colors.white),
             child: ListView(
               children: [
-                const SizedBox(height: 40),
                 const Padding(
                   padding: EdgeInsets.only(left: 20),
-                  child: Text(
-                    'Đổi mật khẩu',
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                  ),
                 ),
                 const SizedBox(height: 20),
                 _buildPasswordField(0, 'Mật khẩu cũ', _oldPasswordController),

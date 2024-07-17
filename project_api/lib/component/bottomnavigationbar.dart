@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:project/generated/l10n.dart';
 
 class BottomBar extends StatelessWidget {
   final int currentIndex;
@@ -29,19 +30,19 @@ class BottomBar extends StatelessWidget {
         BottomNavigationBarItem(
             icon: Image.asset(
                 currentIndex == 0 ? navIconsSelected[0] : navIcons[0]),
-            label: 'Trang chủ'),
+            label: S.of(context).home),
         BottomNavigationBarItem(
             icon: Image.asset(
                 currentIndex == 1 ? navIconsSelected[1] : navIcons[1]),
-            label: 'Điểm danh'),
+            label: S.of(context).attendance),
         BottomNavigationBarItem(
             icon: Image.asset(
                 currentIndex == 2 ? navIconsSelected[2] : navIcons[2]),
-            label: 'Tin nhắn'),
+            label: S.of(context).message),
         BottomNavigationBarItem(
             icon: Image.asset(
                 currentIndex == 3 ? navIconsSelected[3] : navIcons[3]),
-            label: 'Cài đặt'),
+            label: S.of(context).setting),
       ],
       onTap: (value) {
         final routes = ['home', 'attendance', 'message', 'setting'];

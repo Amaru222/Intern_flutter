@@ -9,8 +9,8 @@ Dio createDio() {
   dio.interceptors.add(interceptor);
   dio.options = BaseOptions(
     baseUrl: 'https://api-school-mng-dev.vais.vn',
-    connectTimeout: const Duration(seconds: 5),
-    receiveTimeout: const Duration(seconds: 3),
+    connectTimeout: const Duration(seconds: 6),
+    receiveTimeout: const Duration(seconds: 6),
   );
   return dio;
 }

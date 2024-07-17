@@ -46,16 +46,6 @@ class _ProfileState extends State<Profile> {
   }
 
   Widget builProfileUI(User userProfile) {
-    // String nameUser = userProfile['data']['record']['name'] ?? '';
-    // String role = userProfile['data']['record']['roleInfo']['role'] ?? '';
-    // String nameRole = '';
-    // if (role == 'teacher') {
-    //   nameRole = userProfile['data']['record']['teacher']['name'] ?? '';
-    // } else {
-    //   nameRole = userProfile['data']['record']['parents']['name'] ?? '';
-    // }
-    // String classInfo =
-    //     userProfile['data']['record']['teacher']['class']['name'] ?? '';
     List<Map<String, dynamic>> profileItems = [
       {
         'field': 'Ngày sinh',

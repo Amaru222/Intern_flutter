@@ -9,6 +9,11 @@ class LoadDataFrameReview extends FrameReviewEvent {
   LoadDataFrameReview(this.studentId);
 }
 
+class LoadMoreDataFrameReview extends FrameReviewEvent {
+  final String studentId;
+  LoadMoreDataFrameReview(this.studentId);
+}
+
 class PostReviewButtonPressed extends FrameReviewEvent {
   final String studentId;
   final String message;
@@ -31,5 +36,5 @@ class DeleteReviewButtonPressed extends FrameReviewEvent {
   final String studentId;
   final Map<String, dynamic> listReview;
 
-  DeleteReviewButtonPressed( this.studentId, this.listReview);
+  DeleteReviewButtonPressed(this.studentId, this.listReview);
 }

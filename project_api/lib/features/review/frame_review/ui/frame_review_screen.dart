@@ -16,12 +16,12 @@ class FrameReview extends StatefulWidget {
 
 class _FrameReviewState extends State<FrameReview> {
   TextEditingController messageController = TextEditingController();
+  ScrollController scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
     final dio = createDio();
     final reviewService = ReviewService(dio: dio);
-    // bool reserve = false;
 
     return BlocProvider(
       create: (context) => FrameReviewBloc(reviewService)
@@ -76,6 +76,7 @@ class _FrameReviewState extends State<FrameReview> {
                         child: Container(
                           color: Colors.white,
                           child: ListView.builder(
+                            controller: scrollController,
                             reverse: true,
                             itemCount: state.listReview.length,
                             itemBuilder: (context, index) {

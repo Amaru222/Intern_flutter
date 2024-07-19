@@ -111,7 +111,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           Padding(
                             padding: const EdgeInsets.only(left: 18),
                             child: Text(
-                              S.of(context).student,
+                              ' ${state.listStudent['data']['items'].length} ${S.of(context).student}',
                               style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 16,

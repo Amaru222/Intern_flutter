@@ -18,6 +18,7 @@ class FrameReviewBloc extends Bloc<FrameReviewEvent, FrameReviewState> {
     on<PostReviewButtonPressed>(_postReviewButtonPressed);
     on<UpdateReviewButtonPressed>(_updateReviewButtonPressed);
     on<DeleteReviewButtonPressed>(_deleteReviewButtonPressed);
+    on<LoadMoreDataFrameReview>(_loadMoreDataFrameReview);
   }
   Future<FutureOr<void>> _loadDataFrameReview(
       LoadDataFrameReview event, Emitter<FrameReviewState> emit) async {
@@ -183,6 +184,26 @@ class FrameReviewBloc extends Bloc<FrameReviewEvent, FrameReviewState> {
       return timeFinalFormat;
     } else {
       return timeFinalFormat = '';
+    }
+  }
+
+  Future<FutureOr<void>> _loadMoreDataFrameReview(
+      LoadMoreDataFrameReview event, Emitter<FrameReviewState> emit) async {
+    if (state is FrameReviewLoaded) {
+      try {
+        final listReviews = await reviewService.getMoreReview(
+          event.studentId,
+          2,
+        );
+        final currentState = state as FrameReviewLoaded;
+        final updatedList =
+            List<Map<String, dynamic>>.from(currentState.listReview)
+              ..addAll(listReviews as Iterable<Map<String, dynamic>>);
+
+        emit(FrameReviewLoaded(listReview: updatedList));
+      } catch (error) {
+        emit(FrameReviewError(error.toString()));
+      }
     }
   }
 }

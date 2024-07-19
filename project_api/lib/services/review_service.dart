@@ -27,12 +27,12 @@ class ReviewService {
     }
   }
 
-  Future<Map<String, dynamic>> getListReViewLast(String studentId) async {
+  Future<Map<String, dynamic>> getMoreReview(String studentId, int page) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
       final response = await dio.get(
-        'https://api-school-mng-dev.vais.vn/api/reviews?filter[studentId]=$studentId&limit=1&page=1&sort[createdAt]=-1',
+        'https://api-school-mng-dev.vais.vn/api/reviews?filter[studentId]=$studentId&limit=10&page=$page&sort[createdAt]=-1',
         options: Options(
           headers: {
             'Authorization': 'Bearer $token',
@@ -42,7 +42,7 @@ class ReviewService {
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
       } else {
-        throw Exception('Failed to load list review');
+        throw Exception('Failed to load more reviews');
       }
     } catch (e) {
       throw Exception(e.toString());
